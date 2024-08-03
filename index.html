@@ -10,12 +10,20 @@
         background-color: #f0f8f0;
         color: #333;
         padding: 20px;
+        margin: 0;
       }
       h1 {
         color: #2e8b57;
       }
-      div {
+      .container {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
         margin-bottom: 15px;
+      }
+      .container > div {
+        flex: 1;
+        margin-right: 15px;
       }
       label {
         display: inline-block;
@@ -23,12 +31,13 @@
         font-weight: bold;
       }
       input,
-      button {
+      button,
+      textarea {
         padding: 8px;
         margin-top: 5px;
       }
       input[type="text"] {
-        width: 300px;
+        width: 100%;
       }
       textarea {
         width: 100%;
@@ -37,6 +46,27 @@
         border-radius: 4px;
         background-color: #fff;
         color: #333;
+        box-sizing: border-box;
+      }
+      .json-input-container {
+        display: flex;
+        flex-direction: column;
+      }
+      .json-input-container label {
+        margin-bottom: 5px;
+      }
+      .button-container {
+        display: flex;
+        justify-content: flex-end;
+        margin-top: 10px;
+      }
+      .button-container button {
+        margin-left: 10px;
+      }
+      #messages {
+        width: 100%;
+        height: 150px;
+        resize: vertical;
       }
       button {
         background-color: #2e8b57;
@@ -48,10 +78,26 @@
       button:hover {
         background-color: #1e6f43;
       }
+      .subscription-list {
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        padding: 10px;
+        background-color: #fff;
+        max-height: 150px;
+        overflow-y: auto;
+        width: 100%;
+      }
+      .subscription-list-container {
+        display: flex;
+        flex-direction: column;
+        flex: 1;
+        margin-left: 15px;
+      }
     </style>
     <script>
       var socket = new SockJS("http://localhost:8080/ws");
       var stompClient = Stomp.over(socket);
+      var subscriptions = [];
 
       function connect() {
         stompClient.connect({}, function (frame) {
@@ -67,26 +113,38 @@
           var messages = document.getElementById("messages");
           messages.value += "Received: " + message.body + "\n";
         });
+        if (!subscriptions.includes(endpoint)) {
+          subscriptions.push(endpoint);
+          updateSubscriptionList();
+        }
+      }
+
+      function updateSubscriptionList() {
+        var subscriptionList = document.getElementById("subscriptionList");
+        subscriptionList.innerHTML = ""; // Clear existing list
+        subscriptions.forEach(function (sub) {
+          var li = document.createElement("li");
+          li.textContent = sub;
+          subscriptionList.appendChild(li);
+        });
       }
 
       function sendMessage() {
         var destination = document.getElementById("destination").value;
-        var countryId = document.getElementById("countryId").value;
-        var senderId = document.getElementById("senderId").value;
-        var content = document.getElementById("message").value;
-        var groupMessageRequestDto = {
-          countryId: parseInt(countryId),
-          senderId: parseInt(senderId),
-          content: content,
-        };
-        stompClient.send(
-          destination,
-          {},
-          JSON.stringify(groupMessageRequestDto)
-        );
-        var messages = document.getElementById("messages");
-        messages.value +=
-          "Sent: " + JSON.stringify(groupMessageRequestDto) + "\n";
+        var jsonText = document.getElementById("jsonInput").value;
+        try {
+          var groupMessageRequestDto = JSON.parse(jsonText);
+          stompClient.send(
+            destination,
+            {},
+            JSON.stringify(groupMessageRequestDto)
+          );
+          var messages = document.getElementById("messages");
+          messages.value +=
+            "Sent: " + JSON.stringify(groupMessageRequestDto) + "\n";
+        } catch (e) {
+          alert("Invalid JSON format. Please correct it and try again.");
+        }
       }
 
       window.onload = function () {
@@ -96,34 +154,42 @@
   </head>
   <body>
     <h1>WebSocket Test</h1>
-    <div>
-      <label for="status">Status: </label>
-      <span id="status">Disconnected</span>
+    <div class="container">
+      <div>
+        <div>
+          <label for="status">Status: </label>
+          <span id="status">Disconnected</span>
+        </div>
+        <div>
+          <label for="endpoint">Subscribe to Endpoint: </label>
+          <input type="text" id="endpoint" value="/countries/Angola/messages" />
+          <button onclick="subscribe()">Subscribe</button>
+        </div>
+        <div>
+          <label for="destination">Destination: </label>
+          <input type="text" id="destination" value="/chat/group-messages" />
+        </div>
+        <div class="json-input-container">
+          <label for="jsonInput">Message JSON:</label>
+          <textarea id="jsonInput" rows="10">
+{
+    "countryId": 5,
+    "senderId": 1,
+    "content": "Hello angola"
+}</textarea
+          >
+          <div class="button-container">
+            <button onclick="sendMessage()">Send Message</button>
+          </div>
+        </div>
+      </div>
+      <div class="subscription-list-container">
+        <label>Subscriptions:</label>
+        <ul id="subscriptionList" class="subscription-list"></ul>
+      </div>
     </div>
     <div>
-      <label for="endpoint">Subscribe to Endpoint: </label>
-      <input type="text" id="endpoint" value="/countries/Angola/messages" />
-      <button onclick="subscribe()">Subscribe</button>
-    </div>
-    <div>
-      <label for="destination">Destination: </label>
-      <input type="text" id="destination" value="/chat/group-messages" />
-    </div>
-    <div>
-      <label for="countryId">Country ID: </label>
-      <input type="text" id="countryId" value="5" />
-    </div>
-    <div>
-      <label for="senderId">Sender ID: </label>
-      <input type="text" id="senderId" value="1" />
-    </div>
-    <div>
-      <label for="message">Message: </label>
-      <input type="text" id="message" value="Hello Server" />
-      <button onclick="sendMessage()">Send Message</button>
-    </div>
-    <div>
-      <textarea id="messages" rows="10" readonly></textarea>
+      <textarea id="messages" readonly></textarea>
     </div>
   </body>
 </html>
