@@ -1,0 +1,11 @@
+
+
+.message {
+    transition: 300ms;
+}
+
+.message:hover {
+  cursor: pointer;
+  text-decoration: underline;
+  /*color: #065607;*/
+}
