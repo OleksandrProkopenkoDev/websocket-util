@@ -21,28 +21,32 @@ const DestinationInput: FC<DestinationInputProps> = ({
                                                        destination,
                                                        setSelectedDestination
                                                      }) => {
+
+  const onSelect = (value : string) => {
+    let newDest = destinationsList.find((e) => e.destination === value);
+    if (newDest) {
+      newDest.addedOn = new Date()
+      UpdateDestination(newDest)
+    }
+    setSelectedDestination(newDest)
+    setDestination(value)
+  }
+
+  const renderOption = (value : string) => {
+    return <Flex gap={5} align={"center"} justify={"space-between"}>
+      <span className={"pt-sans-regula"} style={{fontSize: 18}}>{value}</span>
+      <Button danger onClick={() => removeDestinationsItem(value as string)}
+              icon={<CloseOutlined/>}/>
+    </Flex>
+  }
+
   return (
       <Flex style={{fontSize: 20}} className={"pt-sans-regular"} align={"center"}>
         <label htmlFor="destination">Destination: </label>
         <Select
-            optionRender={(option) => {
-              return <Flex gap={5} align={"center"} justify={"space-between"}>
-                <span className={"pt-sans-regula"} style={{fontSize: 18}}>{option.label}</span>
-                <Button danger onClick={() => removeDestinationsItem(option.value as string)}
-                        icon={<CloseOutlined/>}/>
-              </Flex>;
-            }}
+            optionRender={(option) => renderOption(option.value as string)}
             value={""}
-            onSelect={(value) => {
-              console.log(value, destinationsList.find((e) => e.destination === value))
-              let newDest = destinationsList.find((e) => e.destination === value);
-              if (newDest) {
-                newDest.addedOn = new Date()
-                UpdateDestination(newDest)
-              }
-              setSelectedDestination(newDest)
-              setDestination(value)
-            }}
+            onSelect={onSelect}
             optionFilterProp="label"
             dropdownStyle={{width: 500}}
             options={destinationsList.map((item) => ({

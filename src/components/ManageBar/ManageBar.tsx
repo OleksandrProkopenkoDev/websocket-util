@@ -19,7 +19,7 @@ import SubscribeInput from "../SubscribeInput/SubscribeInput.tsx";
 import ConnectBtn from "../ConnectBtn/ConnectBtn.tsx";
 
 interface ManageBarProps {
-  messages : ILogItem[]
+  messages: ILogItem[]
   subscriptions: Subscription[]
   setMessages: (value: (((prevState: ILogItem[]) => ILogItem[]) | ILogItem[])) => void
   subscriptionListRef: MutableRefObject<HTMLUListElement | null>
@@ -32,22 +32,16 @@ const ManageBar: FC<ManageBarProps> = ({
                                          setSubscriptions, messages, setMessages
                                        }) => {
   const [status, setStatus] = useState<string>('Disconnected 🔴');
-  const [handshakeUrl, setHandshakeUrl] = useState("http://localhost:8080/ws")
+  const [handshakeUrl, setHandshakeUrl] = useState("http://localhost:8080/")
   const [endpoint, setEndpoint] = useState<string>('');
-  const [destination, setDestination] = useState<string>('/chat/group-messages');
+  const [destination, setDestination] = useState<string>('');
   const [isConnection, setIsConnection] = useState<boolean>(false);
   const [isConnected, setIsConnected] = useState<boolean>(false)
   const [client, setClient] = useState<Client>()
   const [subscriptionList, setSubscriptionList] = useState<string[]>([])
   const [destinationsList, setDestinationsList] = useState<DestinationListItem[]>([])
   const [selectedDestination, setSelectedDestination] = useState<DestinationListItem>()
-  const [jsonInput, setJsonInput] = useState(JSON.stringify(
-          {
-            countryId: 5,
-            senderId: 1,
-            content: 'Hello angola'
-          })
-  );
+  const [jsonInput, setJsonInput] = useState<string>('');
 
   useEffect(() => {
     setSubscriptionList(getAllSubscriptions())
@@ -94,14 +88,14 @@ const ManageBar: FC<ManageBarProps> = ({
     } else {
       setIsConnected(false)
       setStatus('Disconnected 🔴')
-      if (client ) {
+      if (client) {
         client.disconnect(() => {
           console.log('Disconnected 🔴')
         })
       }
     }
     return () => {
-      if (client ) {
+      if (client) {
         client.disconnect(() => console.log('Disconnected 🔴'));
       }
     };
@@ -119,8 +113,8 @@ const ManageBar: FC<ManageBarProps> = ({
    * @param json
    * @param logType type of log message
    */
-  const logEvent = (message : string, json : string, logType? : LogType) => {
-    let logItem : ILogItem = {message: message, json: json, type: logType}
+  const logEvent = (message: string, json: string, logType?: LogType) => {
+    let logItem: ILogItem = {message: message, json: json, type: logType}
     setMessages((prevState) => [...prevState, logItem])
   }
 
@@ -161,7 +155,7 @@ const ManageBar: FC<ManageBarProps> = ({
                 vertical
                 className={"pt-sans-regular"}
                 gap={5}
-               
+
           >
             <HandshakeInput handshakeUrl={handshakeUrl}
                             isConnected={isConnected}
@@ -174,16 +168,16 @@ const ManageBar: FC<ManageBarProps> = ({
                         client={client}
             />
 
-          <SubscribeInput isConnected={isConnected}
-                          logEvent={logEvent}
-                          client={client}
-                          setSubscriptions={setSubscriptions}
-                          onRemoveSubscriptionItem={onRemoveSubscriptionItem}
-                          setEndpoint={setEndpoint}
-                          subscriptionList={subscriptionList}
-                          endpoint={endpoint}
-                          subscriptions={subscriptions}
-          />
+            <SubscribeInput isConnected={isConnected}
+                            logEvent={logEvent}
+                            client={client}
+                            setSubscriptions={setSubscriptions}
+                            onRemoveSubscriptionItem={onRemoveSubscriptionItem}
+                            setEndpoint={setEndpoint}
+                            subscriptionList={subscriptionList}
+                            endpoint={endpoint}
+                            subscriptions={subscriptions}
+            />
           </Flex>
           <SubscriptionList OnUnsubscribe={OnUnsubscribe} subscriptions={subscriptions}/>
         </Flex>

@@ -25,26 +25,28 @@ const HandshakeInput:FC<HandshakeInputProps> = ({handshakeUrl, setHandshakeUrl, 
     setHandshakesUrlList(arr)
   }, [localStorage.getItem("handshakeUrls")]);
 
+  const renderOption = (value : string) => {
+    return <Flex gap={5}
+                 align={"center"}
+                 justify={"space-between"}
+    >
+                <span className={"pt-sans-regula"}
+                      style={{fontSize: 18}}>
+                  {value}
+                </span>
+      <Button danger
+              onClick={() => onRemove(value)}
+              icon={<CloseOutlined/>}
+      />
+    </Flex>;
+  }
+
   return (
       <Flex style={{fontSize: 20}} align={"center"} className={"pt-sans-regular"}>
         <label>Handshake url: </label>
         <Select
             disabled={isConnected}
-            optionRender={(option) => {
-              return <Flex gap={5}
-                           align={"center"}
-                           justify={"space-between"}
-              >
-                <span className={"pt-sans-regula"}
-                      style={{fontSize: 18}}>
-                  {option.label}
-                </span>
-                <Button danger
-                        onClick={() => onRemove(option.value as string)}
-                        icon={<CloseOutlined/>}
-                />
-              </Flex>;
-            }}
+            optionRender={(option) => renderOption(option.value as string)}
             value={''}
             onSelect={(value) => {
               setHandshakeUrl(value)
@@ -55,7 +57,6 @@ const HandshakeInput:FC<HandshakeInputProps> = ({handshakeUrl, setHandshakeUrl, 
               label: item,
             }))}
         />
-
         <Input style={{fontSize: 20, maxWidth: 350}}
                className={"pt-sans-regular"}
                disabled={isConnected}

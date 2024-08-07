@@ -1,5 +1,5 @@
 const NAME = "handshakeUrls"
-interface HandshakeListItem {
+export interface HandshakeListItem {
   url : string
   addedOn : Date;
 }
@@ -11,7 +11,7 @@ export const saveHandshakeUrlIfNotSaved = (url : string) => {
     addHandshakesUrl(url)
   } else {
     handshake.addedOn = new Date();
-    saveList(handshakeListItems)
+    saveHandshakeList(handshakeListItems)
   }
 }
 
@@ -30,25 +30,24 @@ const addHandshakesUrl = (url : string) => {
     addedOn : new Date()
   }
   list.push(item)
-  console.log("save list", list)
-  saveList(list)
+  saveHandshakeList(list)
 }
 
 export const removeHandshakeUrlItem = (url : string) => {
   let list =getAllHandshakesUrlsItems();
   let newList = list.filter((e) => e.url !== url)
-  saveList(newList)
+  saveHandshakeList(newList)
 }
 
-const getAllHandshakesUrlsItems = () : HandshakeListItem[] =>  {
+export const getAllHandshakesUrlsItems = () : HandshakeListItem[] =>  {
   let list = JSON.parse(localStorage.getItem(NAME));
   if (list === null) {
-    saveList([])
+    saveHandshakeList([])
     return []
   }
   return list;
 }
 
-const saveList = (list :  HandshakeListItem[]) => {
+export const saveHandshakeList = (list :  HandshakeListItem[]) => {
   localStorage.setItem(NAME, JSON.stringify(list))
 }

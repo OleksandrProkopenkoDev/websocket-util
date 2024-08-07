@@ -2,7 +2,7 @@ import {DestinationListItem} from "./DestinationService.ts";
 
 const NAME = "subscriptions"
 
-interface SubscriptionListItem {
+export interface SubscriptionListItem {
   destination : string
   addedOn : Date;
 }
@@ -14,7 +14,7 @@ export const saveSubscriptionIfNotSaved = (destination : string) => {
      addSubscriptionItem(destination)
    } else {
      subscription.addedOn = new Date();
-     saveList(subscriptionsList)
+     saveSubscriptionsList(subscriptionsList)
    }
 }
 
@@ -33,7 +33,7 @@ const addSubscriptionItem = (destination : string) => {
     addedOn : new Date()
   }
   list.push(item)
-  saveList(list)
+  saveSubscriptionsList(list)
 }
 
 export const removeSubscriptionItem = (destination : string) => {
@@ -43,15 +43,14 @@ export const removeSubscriptionItem = (destination : string) => {
 }
 
 export const getAllSubscriptionsItems = () : SubscriptionListItem[] =>  {
-  console.log("get all sb")
   let list = JSON.parse(localStorage.getItem("subscriptions"));
   if (list === null) {
-    saveList([])
+    saveSubscriptionsList([])
     return []
   }
   return list;
 }
 
-const saveList = (list :  SubscriptionListItem[]) => {
+export const saveSubscriptionsList = (list :  SubscriptionListItem[]) => {
   localStorage.setItem(NAME, JSON.stringify(list))
 }

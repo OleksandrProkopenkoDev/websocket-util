@@ -39,7 +39,7 @@ export const UpdateDestination = (destination : DestinationListItem) => {
  let elem =  list.find((e) => e.destination === destination.destination)
   if (elem) {
     list[list.indexOf(elem)] = destination;
-    saveList(list)
+    saveDestinationsList(list)
   } else console.error("not found")
 }
 
@@ -55,13 +55,13 @@ const addDestinationItem = (destination : string) => {
     ]
   }
   list.push(item)
-  saveList(list)
+  saveDestinationsList(list)
 }
 
 export const removeDestinationsItem = (destination : string) => {
   let list = getAllDestinationsItems();
   let newList = list.filter((e) => e.destination !== destination)
-  saveList(newList)
+  saveDestinationsList(newList)
 }
 
 export const getAllDestinationsItems = (): DestinationListItem[] => {
@@ -71,11 +71,11 @@ export const getAllDestinationsItems = (): DestinationListItem[] => {
       return new Date(b.addedOn) - new Date(a.addedOn);
     });
   } else {
-    saveList([])
+    saveDestinationsList([])
     return []
   }
 }
 
-const saveList = (list :  DestinationListItem[]) => {
+export const saveDestinationsList = (list :  DestinationListItem[]) => {
   localStorage.setItem(NAME, JSON.stringify(list))
 }

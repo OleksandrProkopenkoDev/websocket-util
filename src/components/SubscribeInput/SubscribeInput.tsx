@@ -7,11 +7,11 @@ import {LogType} from "../LogItem/LogItem.tsx";
 import {Client} from "stompjs";
 
 interface SubscribeInputProps {
-  isConnected : boolean
-  onRemoveSubscriptionItem : (destination: string) => void
+  isConnected: boolean
+  onRemoveSubscriptionItem: (destination: string) => void
   setEndpoint: (value: (((prevState: string) => string) | string)) => void
   subscriptionList: string[]
-  endpoint : string
+  endpoint: string
   setSubscriptions: (value: (((prevState: Subscription[]) => Subscription[]) | Subscription[])) => void
   subscriptions: Subscription[]
   client?: Client
@@ -90,7 +90,8 @@ const SubscribeInput: FC<SubscribeInputProps> = ({
                  value={endpoint}
                  onChange={(e) => setEndpoint(e.target.value)}
           />
-          <Button type={"primary"} disabled={!isConnected || isSubscribeButtonDisabled} onClick={OnSubscribe}>Subscribe</Button>
+          <Button type={"primary"} disabled={!isConnected || isSubscribeButtonDisabled}
+                  onClick={OnSubscribe}>Subscribe</Button>
         </Flex>
       </Flex>
   );
