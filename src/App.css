@@ -1,11 +1,50 @@
+@import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
+
+.pt-sans-regular {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+.editor div {
+  font-size: 20px!important;
+}
+
+.pt-sans-bold {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
+}
+:root {
+  --border-color: #B5B0B
+
+}
+
+
+.pt-sans-regular-italic {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 400;
+  font-style: italic;
+}
+
+.pt-sans-bold-italic {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 700;
+  font-style: italic;
+}
 
 body {
-  font-family: Arial, sans-serif;
+  font-family: "PT Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
   background-color: #f0f8f0;
   color: #333;
-  padding: 20px;
+  padding: 0;
   margin: 0;
 }
+html, body{
+  height: 100vh;
+}
+
 h1 {
   color: #2e8b57;
 }
@@ -86,4 +125,6 @@ button:hover {
   flex-direction: column;
   flex: 1;
   margin-left: 15px;
+}
+body{
 }
