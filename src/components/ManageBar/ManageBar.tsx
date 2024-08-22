@@ -1,6 +1,7 @@
 import React, {FC, MutableRefObject, useEffect, useState} from 'react';
 import {Flex, notification} from "antd";
-import Stomp, {Client} from "stompjs";
+// import Stomp, {Client} from "stompjs";
+import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import {Subscription} from "../../types/Subscription.ts";
 import JsonEditorComponent from "../JsonEditorComponent.tsx";
@@ -71,19 +72,103 @@ const ManageBar: FC<ManageBarProps> = ({
   const onConnect = () => {
     saveHandshakeUrlIfNotSaved(handshakeUrl)
     if (!isConnected) {
-      const socket = new SockJS(handshakeUrl);
-      let client = Stomp.over(socket as WebSocket);
-      setIsConnection(true)
-      client.connect({}, (frame) => {
-        setStatus('Connected 🟢');
-        setIsConnection(false)
-        setIsConnected(true)
-        setClient(client)
-      }, error => {
-        setIsConnected(false)
-        setIsConnection(false)
-        notification.error({message: "Can't connect to WS"})
+      // const socket = new SockJS(handshakeUrl);
+
+      const socket = new SockJS(handshakeUrl, null, {
+        transports: ['websocket', 'xhr-streaming', 'xhr-polling']  // Exclude 'jsonp-polling'
       });
+
+      const okToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteW5ld21haWxAaS51YSIsImlhdCI6MTcyNDI1OTI3MywiZXhwIjoxNzI0MzQ1NjczfQ.lZTv0ErcEsANddyAdj4CGgWZBq4mAh2Mn0AC9Y-2DWg"
+      const expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteW5ld21haWxAaS51YSIsImlhdCI6MTcyNDIyNzc5NCwiZXhwIjoxNzI0MTE0MTk0fQ.FJDKgJGW4X-sJwnDk2Z9yR0oVO6DC028BVqSSCJByck"
+      const tokenWithInvalidUsername = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpbnZhbGlkdXNlcm5hbWVAaS51YSIsImlhdCI6MTcyNDIyNzc5NCwiZXhwIjoxNzI0MzE0MTk0fQ.0nkBaDE_UFpVPv0qk-Esy5HTvCtq5BQ1AwPz4pJplqU"
+      const tokenWithInvalidUsername1 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteW5ld21haWxAaS51YSIsImlhdCI6MTcyNDIyNzI4MCwiZXhwIjoxNzI0MzEzNjgwfQ.UWLJrhxF-F6CzTC7fkqsVYU4ElhTK0w2AEzm6rc9WBc"
+
+
+      var client = new Client({
+        webSocketFactory: () => socket,
+        connectHeaders: {
+          'Authorization': `Bearer ${expiredToken}`
+        },
+        debug: (str) => {
+          console.log(str);
+          if (str.includes("Connection closed")) {
+            console.error("Connection closed")
+            setStatus('Disconnected 🔴')
+            setIsConnected(false);
+            setIsConnection(false);
+          }
+        },
+        onStompError : (frame) => {
+          console.error('Broker reported error:', frame.headers['message']);
+          console.error('Additional details:', frame.body);
+
+          setIsConnected(false);
+          setIsConnection(false);
+
+          notification.error({
+            message: "WebSocket Error",
+            description: frame.headers['message'] || "An unexpected error occurred.",
+          });
+        },
+        onWebSocketError : (e) => {
+          console.error("err",e)
+        },
+        onWebSocketClose : (e) => {
+          console.error("err", e)
+        },
+        onUnhandledMessage : () => {
+          console.log("MESSAGE")
+        },
+        onUnhandledReceipt : () => {
+          console.log("MESSAGE")
+        },
+        onUnhandledFrame : () => {
+          console.log("MESSAGE")
+        },
+        onChangeState : (state) => {
+          console.log("onChangeState", state)
+        },
+        reconnectDelay: 5000,  // Reconnect if the connection drops
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+      });
+      console.log(client)
+      // Setting up the connection status before activation
+      setIsConnection(true);
+      client.onConnect = (frame) => {
+        console.log('Connected:', frame);
+        setClient(client)
+        setStatus('Connected 🟢');
+        setIsConnected(true);
+        setIsConnection(false);
+      };
+
+      client.onDisconnect = (error) => {
+        console.error('Disconnected:', error);
+        setIsConnected(false);
+        setIsConnection(false);
+        notification.error({ message: "Disconnected from WebSocket" });
+      };
+
+
+      // Activate the client to initiate the WebSocket connection
+      client.activate();
+
+
+      // client?.onConnect =  (frame) => {
+      //   setStatus('Connected 🟢');
+      //   setIsConnection(false)
+      //   setIsConnected(true)
+      //   setClient(client)
+      // }, error => {
+      //   setIsConnected(false)
+      //   setIsConnection(false)
+      //   notification.error({message: "Can't connect to WS"})
+
+      // };
+
+      // let client = Stomp.over(socket as WebSocket);
+
 
     } else {
       setIsConnected(false)
@@ -103,7 +188,10 @@ const ManageBar: FC<ManageBarProps> = ({
 
   const onSendMessage = () => {
     saveDestinationIfNotSaved(destination)
-    client?.send(destination, {}, jsonInput);
+    client?.publish({
+      destination: destination,
+      body: jsonInput
+    });
     logEvent("Sent message -" + destination, jsonInput, LogType.SEND)
   };
 
