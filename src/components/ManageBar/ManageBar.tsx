@@ -1,6 +1,7 @@
 import React, {FC, MutableRefObject, useEffect, useState} from 'react';
 import {Flex, notification} from "antd";
-import Stomp, {Client} from "stompjs";
+// import Stomp, {Client} from "stompjs";
+import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import {Subscription} from "../../types/Subscription.ts";
 import JsonEditorComponent from "../JsonEditorComponent.tsx";
@@ -17,6 +18,8 @@ import {saveHandshakeUrlIfNotSaved} from "../../api/HandshakeUrlService.ts";
 import DestinationInput from "../DestinationInput/DestinationInput.tsx";
 import SubscribeInput from "../SubscribeInput/SubscribeInput.tsx";
 import ConnectBtn from "../ConnectBtn/ConnectBtn.tsx";
+import TokenInput from "../TokenInput/TokenInput.tsx";
+import {IToken, TokenListItem} from "../../api/TokenService.ts";
 
 interface ManageBarProps {
   messages: ILogItem[]
@@ -33,6 +36,7 @@ const ManageBar: FC<ManageBarProps> = ({
                                        }) => {
   const [status, setStatus] = useState<string>('Disconnected 🔴');
   const [handshakeUrl, setHandshakeUrl] = useState("http://localhost:8080/")
+  const [token, setToken] = useState<IToken>({token: "invalid", label: "invalid"})
   const [endpoint, setEndpoint] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
   const [isConnection, setIsConnection] = useState<boolean>(false);
@@ -71,19 +75,80 @@ const ManageBar: FC<ManageBarProps> = ({
   const onConnect = () => {
     saveHandshakeUrlIfNotSaved(handshakeUrl)
     if (!isConnected) {
-      const socket = new SockJS(handshakeUrl);
-      let client = Stomp.over(socket as WebSocket);
-      setIsConnection(true)
-      client.connect({}, (frame) => {
-        setStatus('Connected 🟢');
-        setIsConnection(false)
-        setIsConnected(true)
-        setClient(client)
-      }, error => {
-        setIsConnected(false)
-        setIsConnection(false)
-        notification.error({message: "Can't connect to WS"})
+      // const socket = new SockJS(handshakeUrl);
+
+      const socket = new SockJS(handshakeUrl, null, {
+        transports: ['websocket', 'xhr-streaming', 'xhr-polling']  // Exclude 'jsonp-polling'
       });
+
+      var client = new Client({
+        webSocketFactory: () => socket,
+        connectHeaders: {
+          'Authorization': `Bearer ${token.token}`
+        },
+        debug: (str) => {
+          console.log(str);
+          if (str.includes("Connection closed")) {
+            console.error("Connection closed")
+            setStatus('Disconnected 🔴')
+            setIsConnected(false);
+            setIsConnection(false);
+          }
+        },
+        onStompError : (frame) => {
+          console.error('Broker reported error:', frame.headers['message']);
+          console.error('Additional details:', frame.body);
+
+          setIsConnected(false);
+          setIsConnection(false);
+
+          notification.error({
+            placement: "bottomRight",
+            message: "WebSocket Error",
+            description: frame.headers['message'] || "An unexpected error occurred.",
+          });
+        },
+        onWebSocketError : (e) => {
+          console.error("err",e)
+        },
+        onWebSocketClose : (e) => {
+          console.error("err", e)
+        },
+        onUnhandledMessage : () => {
+          console.log("MESSAGE")
+        },
+        onUnhandledReceipt : () => {
+          console.log("MESSAGE")
+        },
+        onUnhandledFrame : () => {
+          console.log("MESSAGE")
+        },
+        onChangeState : (state) => {
+          console.log("onChangeState", state)
+        },
+        reconnectDelay: 5000,  // Reconnect if the connection drops
+        heartbeatIncoming: 4000,
+        heartbeatOutgoing: 4000,
+      });
+      console.log(client)
+      // Setting up the connection status before activation
+      setIsConnection(true);
+      client.onConnect = (frame) => {
+        console.log('Connected:', frame);
+        setClient(client)
+        setStatus('Connected 🟢');
+        setIsConnected(true);
+        setIsConnection(false);
+      };
+
+      client.onDisconnect = (error) => {
+        console.error('Disconnected:', error);
+        setIsConnected(false);
+        setIsConnection(false);
+        notification.error({ message: "Disconnected from WebSocket" });
+      };
+
+      client.activate();
 
     } else {
       setIsConnected(false)
@@ -103,7 +168,10 @@ const ManageBar: FC<ManageBarProps> = ({
 
   const onSendMessage = () => {
     saveDestinationIfNotSaved(destination)
-    client?.send(destination, {}, jsonInput);
+    client?.publish({
+      destination: destination,
+      body: jsonInput
+    });
     logEvent("Sent message -" + destination, jsonInput, LogType.SEND)
   };
 
@@ -157,10 +225,16 @@ const ManageBar: FC<ManageBarProps> = ({
                 gap={5}
 
           >
-            <HandshakeInput handshakeUrl={handshakeUrl}
-                            isConnected={isConnected}
-                            setHandshakeUrl={setHandshakeUrl}
-            />
+            <Flex gap={10}>
+              <HandshakeInput handshakeUrl={handshakeUrl}
+                              isConnected={isConnected}
+                              setHandshakeUrl={setHandshakeUrl}
+              />
+              <TokenInput token={token}
+                          isConnected={isConnected}
+                          setToken={setToken}
+              />
+            </Flex>
             <ConnectBtn onConnect={onConnect}
                         isConnected={isConnected}
                         isConnection={isConnection}
