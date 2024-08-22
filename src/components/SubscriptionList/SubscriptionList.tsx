@@ -11,7 +11,7 @@ interface SubscriptionListProps {
 
 const SubscriptionList: FC<SubscriptionListProps> = ({subscriptions, OnUnsubscribe}) => {
   return (
-      <div className="subscription-list-container">
+      <div className="subscription-list-container" style={{overflowY : "scroll", maxHeight: 300}}>
         <label style={{fontSize: 20, fontWeight: "bold"}}
                className={"pt-sans-regular"}>Subscriptions:</label>
         <List

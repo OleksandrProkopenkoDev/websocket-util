@@ -10,10 +10,7 @@ interface JsonEditorComponentProps {
   setSelectedDestination: (value: (((prevState: (DestinationListItem | undefined)) => (DestinationListItem | undefined)) | DestinationListItem | undefined)) => void
 }
 
-const JsonEditorComponent: FC<JsonEditorComponentProps> = ({
-                                                             isConnected,
-                                                             onSendMessage,
-                                                             setJsonData,
+const JsonEditorComponent: FC<JsonEditorComponentProps> = ({setJsonData,
                                                              selectedDestination,
                                                              setSelectedDestination
                                                            }) => {
@@ -63,10 +60,11 @@ const JsonEditorComponent: FC<JsonEditorComponentProps> = ({
         <Flex className={"pt-sans-regular"} gap={5} align={"center"} justify={"space-between"}
               style={{width: "100%"}}>
           <span style={{fontSize: 25, fontWeight: "bold"}}>JSON Editor</span>
-          <Button type={"primary"}
-                  onClick={onSendMessage}
-                  disabled={!isConnected}
-          >Send Message</Button>
+          {/*<Button type={"primary"}*/}
+          {/*        onClick={onSendMessage}*/}
+          {/*        disabled={!isConnected}*/}
+          {/*>Send Message</Button>*/}
+
         </Flex>
         <Flex vertical className={"editor"} style={{fontSize: 20}}>
           <Flex gap={10} justify={"space-between"}>

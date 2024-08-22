@@ -72,10 +72,10 @@ const ManageBar: FC<ManageBarProps> = ({
     }
   }, []);
 
+
   const onConnect = () => {
     saveHandshakeUrlIfNotSaved(handshakeUrl)
     if (!isConnected) {
-      // const socket = new SockJS(handshakeUrl);
 
       const socket = new SockJS(handshakeUrl, null, {
         transports: ['websocket', 'xhr-streaming', 'xhr-polling']  // Exclude 'jsonp-polling'
@@ -108,21 +108,7 @@ const ManageBar: FC<ManageBarProps> = ({
             description: frame.headers['message'] || "An unexpected error occurred.",
           });
         },
-        onWebSocketError : (e) => {
-          console.error("err",e)
-        },
-        onWebSocketClose : (e) => {
-          console.error("err", e)
-        },
-        onUnhandledMessage : () => {
-          console.log("MESSAGE")
-        },
-        onUnhandledReceipt : () => {
-          console.log("MESSAGE")
-        },
-        onUnhandledFrame : () => {
-          console.log("MESSAGE")
-        },
+
         onChangeState : (state) => {
           console.log("onChangeState", state)
         },
@@ -197,24 +183,8 @@ const ManageBar: FC<ManageBarProps> = ({
   }
 
   return (
-      <Flex gap={5} style={{width: "100%"}}>
-        <Flex vertical
-              style={{flexBasis: "50%", padding: "10px 15px"}}
-              gap={5}
-        >
-          <DestinationInput destination={destination}
-                            setDestination={setDestination}
-                            destinationsList={destinationsList}
-                            setSelectedDestination={setSelectedDestination}
-          />
-          <JsonEditorComponent onSendMessage={onSendMessage}
-                               isConnected={isConnected}
-                               selectedDestination={selectedDestination as DestinationListItem}
-                               jsonData={jsonInput}
-                               setSelectedDestination={setSelectedDestination}
-                               setJsonData={setJsonInput}
-          />
-        </Flex>
+      <Flex gap={5} vertical style={{width: "100%"}}>
+
         <Flex style={{flexBasis: "50%"}}
               vertical
               gap={10}
@@ -225,6 +195,14 @@ const ManageBar: FC<ManageBarProps> = ({
                 gap={5}
 
           >
+
+            <ConnectBtn onConnect={onConnect}
+                        isConnected={isConnected}
+                        isConnection={isConnection}
+                        status={status}
+                        client={client}
+            />
+
             <Flex gap={10}>
               <HandshakeInput handshakeUrl={handshakeUrl}
                               isConnected={isConnected}
@@ -235,12 +213,7 @@ const ManageBar: FC<ManageBarProps> = ({
                           setToken={setToken}
               />
             </Flex>
-            <ConnectBtn onConnect={onConnect}
-                        isConnected={isConnected}
-                        isConnection={isConnection}
-                        status={status}
-                        client={client}
-            />
+
 
             <SubscribeInput isConnected={isConnected}
                             logEvent={logEvent}
@@ -255,6 +228,27 @@ const ManageBar: FC<ManageBarProps> = ({
           </Flex>
           <SubscriptionList OnUnsubscribe={OnUnsubscribe} subscriptions={subscriptions}/>
         </Flex>
+
+        <Flex vertical
+              style={{flexBasis: "50%", padding: "10px 15px"}}
+              gap={5}
+        >
+          <DestinationInput destination={destination}
+                            setDestination={setDestination}
+                            destinationsList={destinationsList}
+                            setSelectedDestination={setSelectedDestination}
+                            onSendMessage={onSendMessage}
+                            isConnected={isConnected}
+          />
+          <JsonEditorComponent onSendMessage={onSendMessage}
+                               isConnected={isConnected}
+                               selectedDestination={selectedDestination as DestinationListItem}
+                               jsonData={jsonInput}
+                               setSelectedDestination={setSelectedDestination}
+                               setJsonData={setJsonInput}
+          />
+        </Flex>
+
       </Flex>
   );
 };
