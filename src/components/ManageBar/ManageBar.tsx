@@ -18,6 +18,8 @@ import {saveHandshakeUrlIfNotSaved} from "../../api/HandshakeUrlService.ts";
 import DestinationInput from "../DestinationInput/DestinationInput.tsx";
 import SubscribeInput from "../SubscribeInput/SubscribeInput.tsx";
 import ConnectBtn from "../ConnectBtn/ConnectBtn.tsx";
+import TokenInput from "../TokenInput/TokenInput.tsx";
+import {IToken, TokenListItem} from "../../api/TokenService.ts";
 
 interface ManageBarProps {
   messages: ILogItem[]
@@ -34,6 +36,7 @@ const ManageBar: FC<ManageBarProps> = ({
                                        }) => {
   const [status, setStatus] = useState<string>('Disconnected 🔴');
   const [handshakeUrl, setHandshakeUrl] = useState("http://localhost:8080/")
+  const [token, setToken] = useState<IToken>({token: "invalid", label: "invalid"})
   const [endpoint, setEndpoint] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
   const [isConnection, setIsConnection] = useState<boolean>(false);
@@ -78,16 +81,10 @@ const ManageBar: FC<ManageBarProps> = ({
         transports: ['websocket', 'xhr-streaming', 'xhr-polling']  // Exclude 'jsonp-polling'
       });
 
-      const okToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteW5ld21haWxAaS51YSIsImlhdCI6MTcyNDI1OTI3MywiZXhwIjoxNzI0MzQ1NjczfQ.lZTv0ErcEsANddyAdj4CGgWZBq4mAh2Mn0AC9Y-2DWg"
-      const expiredToken = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteW5ld21haWxAaS51YSIsImlhdCI6MTcyNDIyNzc5NCwiZXhwIjoxNzI0MTE0MTk0fQ.FJDKgJGW4X-sJwnDk2Z9yR0oVO6DC028BVqSSCJByck"
-      const tokenWithInvalidUsername = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJpbnZhbGlkdXNlcm5hbWVAaS51YSIsImlhdCI6MTcyNDIyNzc5NCwiZXhwIjoxNzI0MzE0MTk0fQ.0nkBaDE_UFpVPv0qk-Esy5HTvCtq5BQ1AwPz4pJplqU"
-      const tokenWithInvalidUsername1 = "eyJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJteW5ld21haWxAaS51YSIsImlhdCI6MTcyNDIyNzI4MCwiZXhwIjoxNzI0MzEzNjgwfQ.UWLJrhxF-F6CzTC7fkqsVYU4ElhTK0w2AEzm6rc9WBc"
-
-
       var client = new Client({
         webSocketFactory: () => socket,
         connectHeaders: {
-          'Authorization': `Bearer ${expiredToken}`
+          'Authorization': `Bearer ${token.token}`
         },
         debug: (str) => {
           console.log(str);
@@ -106,6 +103,7 @@ const ManageBar: FC<ManageBarProps> = ({
           setIsConnection(false);
 
           notification.error({
+            placement: "bottomRight",
             message: "WebSocket Error",
             description: frame.headers['message'] || "An unexpected error occurred.",
           });
@@ -150,25 +148,7 @@ const ManageBar: FC<ManageBarProps> = ({
         notification.error({ message: "Disconnected from WebSocket" });
       };
 
-
-      // Activate the client to initiate the WebSocket connection
       client.activate();
-
-
-      // client?.onConnect =  (frame) => {
-      //   setStatus('Connected 🟢');
-      //   setIsConnection(false)
-      //   setIsConnected(true)
-      //   setClient(client)
-      // }, error => {
-      //   setIsConnected(false)
-      //   setIsConnection(false)
-      //   notification.error({message: "Can't connect to WS"})
-
-      // };
-
-      // let client = Stomp.over(socket as WebSocket);
-
 
     } else {
       setIsConnected(false)
@@ -245,10 +225,16 @@ const ManageBar: FC<ManageBarProps> = ({
                 gap={5}
 
           >
-            <HandshakeInput handshakeUrl={handshakeUrl}
-                            isConnected={isConnected}
-                            setHandshakeUrl={setHandshakeUrl}
-            />
+            <Flex gap={10}>
+              <HandshakeInput handshakeUrl={handshakeUrl}
+                              isConnected={isConnected}
+                              setHandshakeUrl={setHandshakeUrl}
+              />
+              <TokenInput token={token}
+                          isConnected={isConnected}
+                          setToken={setToken}
+              />
+            </Flex>
             <ConnectBtn onConnect={onConnect}
                         isConnected={isConnected}
                         isConnection={isConnection}

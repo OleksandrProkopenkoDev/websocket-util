@@ -1,3 +1,5 @@
+import {getAllTokenItems, IToken, saveTokensList} from "./TokenService.ts";
+
 const NAME = "handshakeUrls"
 export interface HandshakeListItem {
   url : string
@@ -11,6 +13,15 @@ export const saveHandshakeUrlIfNotSaved = (url : string) => {
     addHandshakesUrl(url)
   } else {
     handshake.addedOn = new Date();
+    saveHandshakeList(handshakeListItems)
+  }
+}
+
+export const updateHandshakeUrlDate = (url : string) => {
+  let handshakeListItems = getAllHandshakesUrlsItems();
+  let item = handshakeListItems.find((e) => e.url === url)
+  if (item) {
+    item.addedOn = new Date();
     saveHandshakeList(handshakeListItems)
   }
 }
