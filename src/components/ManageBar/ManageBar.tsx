@@ -86,6 +86,16 @@ const ManageBar: FC<ManageBarProps> = ({
         connectHeaders: {
           'Authorization': `Bearer ${token.token}`
         },
+        onWebSocketClose: (msg) => {
+          console.log("on close", msg)
+          notification.warning({
+            message: "WebSocket Closed",
+            description: msg.reason,
+          });
+        },
+        onWebSocketError : (err) => {
+          console.log("on error", err)
+        },
         debug: (str) => {
           console.log(str);
           if (str.includes("Connection closed")) {
@@ -103,21 +113,16 @@ const ManageBar: FC<ManageBarProps> = ({
           setIsConnection(false);
 
           notification.error({
-            placement: "bottomRight",
             message: "WebSocket Error",
             description: frame.headers['message'] || "An unexpected error occurred.",
           });
         },
 
-        onChangeState : (state) => {
-          console.log("onChangeState", state)
-        },
         reconnectDelay: 5000,  // Reconnect if the connection drops
         heartbeatIncoming: 4000,
         heartbeatOutgoing: 4000,
       });
-      console.log(client)
-      // Setting up the connection status before activation
+
       setIsConnection(true);
       client.onConnect = (frame) => {
         console.log('Connected:', frame);
