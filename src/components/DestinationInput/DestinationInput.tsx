@@ -8,6 +8,8 @@ import {
 import {CloseOutlined} from "@ant-design/icons";
 
 interface DestinationInputProps {
+  isConnected: boolean
+  onSendMessage: () => void
   destination: string
   setDestination: (value: (((prevState: string) => string) | string)) => void
   destinationsList: DestinationListItem[]
@@ -15,7 +17,8 @@ interface DestinationInputProps {
 }
 
 
-const DestinationInput: FC<DestinationInputProps> = ({
+const DestinationInput: FC<DestinationInputProps> = ({isConnected,
+                                                       onSendMessage,
                                                        destinationsList,
                                                        setDestination,
                                                        destination,
@@ -41,8 +44,8 @@ const DestinationInput: FC<DestinationInputProps> = ({
   }
 
   return (
-      <Flex style={{fontSize: 20}} className={"pt-sans-regular"} align={"center"}>
-        <label htmlFor="destination">Destination: </label>
+      <Flex style={{fontSize: 20}}  className={"pt-sans-regular"} align={"center"}>
+        <label htmlFor="destination" style={{marginRight: 10}}>Destination: </label>
         <Select
             optionRender={(option) => renderOption(option.value as string)}
             value={""}
@@ -60,6 +63,12 @@ const DestinationInput: FC<DestinationInputProps> = ({
                value={destination}
                onChange={(e) => setDestination(e.target.value)}
         />
+
+        <Button type={"primary"}
+                style={{marginLeft: 10}}
+                onClick={onSendMessage}
+                disabled={!isConnected}
+        >Send Message</Button>
       </Flex>
   );
 };

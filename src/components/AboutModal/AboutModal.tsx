@@ -26,7 +26,7 @@ const AboutModal = () => {
                onCancel={handleCancel}
         >
           <p>A web tool designed to simplify the testing and debugging of <a href="https://docs.spring.io/spring-framework/reference/web/websocket/stomp.html">STOMP</a>  endpoints.</p>
-          <p>Version 2.0</p>
+          <p>Version 2.1</p>
           <p>Repository <a href="https://github.com/OleksandrProkopenkoDev/websocket-util">https://github.com/OleksandrProkopenkoDev/websocket-util</a> </p>
           <p>Authors: </p>
           <ul>

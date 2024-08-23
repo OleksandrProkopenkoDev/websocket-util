@@ -108,9 +108,8 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
             align={"center"}
             justify={"flex-start"}
             className={"pt-sans-regular"}
-            gap={5}
       >
-        <span className={"pt-sans-regular"} style={{fontWeight: "bold"}}>Token: </span>
+        <span className={"pt-sans-regular"} style={{fontWeight: "bold", marginRight: 10}}>Token: </span>
         <Select
             disabled={isConnected}
             optionRender={(option) => renderOption(option)}
@@ -166,7 +165,7 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
 
 
         <Tooltip  title={<span style={{ fontSize: 15, }}><a target={"_blank"} href="https://jwt.io/">Build token</a></span>}>
-          <InfoCircleOutlined />
+          <InfoCircleOutlined  style={{marginLeft: 5}} />
 
         </Tooltip>
 
