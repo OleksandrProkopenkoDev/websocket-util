@@ -50,7 +50,7 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
                 </span>
         <Tooltip placement="topLeft" title={<span style={{ fontSize: 15, }}>{tokenListItem.value}</span>}>
                 <span
-                    style={{fontSize: 12}}>
+                    style={{fontSize: 12, maxWidth: 200}}>
                     {tokenListItem.value}
                 </span>
         </Tooltip>
