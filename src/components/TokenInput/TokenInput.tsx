@@ -23,22 +23,16 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
   const [label, setLabel] = useState('');
   const inputRef = useRef<InputRef>(null);
 
-
   const onRemove = (label : string) => {
     setTokens((prevState) => prevState.filter((e) => e.token !== label))
     removeTokenItem(label)
   }
 
   useEffect(() => {
-    console.log(token)
-  }, [token]);
-
-  useEffect(() => {
     let arr = getAllTokenItems();
     if (arr[0]) {
       setToken(arr[0])
     }
-    console.log("getAllTokenItems", arr)
     setTokens(arr)
   }, [localStorage.getItem(TOKEN_STORAGE_NAME)]);
 
@@ -144,7 +138,7 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
                   </Space>
                 </>
             )}
-            dropdownStyle={{width: 950}}
+            dropdownStyle={{width: 550}}
             options={tokens.map((item) => ({
               value: item.token + "",
               label: item.label + "",

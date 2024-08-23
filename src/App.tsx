@@ -15,33 +15,13 @@ function App() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   return (
-      <Flex style={{height: "100vh"}}>
-        <Flex style={{position: "absolute", right:5, top: 0}}>
+      <Flex style={{height: "100vh"}} justify={"space-between"}>
+        <Flex style={{position: "absolute", left: 5, top: 0}}>
           <ImportData/>
           <ExportData/>
           <AboutModal/>
         </Flex>
 
-        <Flex gap={5} style={{backgroundColor: "white", padding: 10, overflowY: "scroll", overflowX: "scroll", width: 600}}>
-          <Flex style={{position: "sticky", top: 0}}>
-
-            <Button icon={<DeleteOutlined style={{fontSize: 20}} />}
-                    title={"Clear all"}
-
-                    onClick={() => setMessages([])}
-            />
-          </Flex>
-
-          <List dataSource={messages}
-                renderItem={(item) => (
-                    <List.Item key={"log-" + Math.random()} style={{padding: 2, margin: 1, fontSize: 20}}
-                               className={"pt-sans-regular"}>
-
-                      <LogItem logItem={item}/>
-                    </List.Item>
-                )}
-          />
-        </Flex>
 
         <ConfigProvider theme={{
           components: {
@@ -52,7 +32,7 @@ function App() {
           }
         }} >
 
-          <Flex style={{padding: 20}}>
+          <Flex style={{padding: 20, marginTop: 50}}>
             <ManageBar messages={messages}
                        setMessages={setMessages}
                        subscriptionListRef={subscriptionListRef}
@@ -63,6 +43,27 @@ function App() {
         </ConfigProvider>
         {/*<h1 style={{marginLeft: 20}}>WebSocket Test</h1>*/}
 
+
+          <Flex gap={5} style={{backgroundColor: "white", padding: 10, overflowY: "scroll", overflowX: "scroll", width: 600}}>
+              <Flex style={{position: "sticky", top: 0}}>
+
+                  <Button icon={<DeleteOutlined style={{fontSize: 20}} />}
+                          title={"Clear all"}
+
+                          onClick={() => setMessages([])}
+                  />
+              </Flex>
+
+              <List dataSource={messages}
+                    renderItem={(item) => (
+                        <List.Item key={"log-" + Math.random()} style={{padding: 2, margin: 1, fontSize: 20}}
+                                   className={"pt-sans-regular"}>
+
+                            <LogItem logItem={item}/>
+                        </List.Item>
+                    )}
+              />
+          </Flex>
       </Flex>
   );
 }
