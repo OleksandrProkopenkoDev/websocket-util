@@ -21,6 +21,8 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
   const [tokens, setTokens] = useState<TokenListItem[]>([])
   const [newToken, setNewToken] = useState('');
   const [label, setLabel] = useState('');
+
+  //@ts
   const inputRef = useRef<InputRef>(null);
 
   const onRemove = (label : string) => {
@@ -157,11 +159,12 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
               className={"pt-sans-regular"}>{token.label}</span>
         </Tooltip>
 
-
         <Tooltip  title={<span style={{ fontSize: 15, }}><a target={"_blank"} href="https://jwt.io/">Build token</a></span>}>
           <InfoCircleOutlined  style={{marginLeft: 5}} />
-
         </Tooltip>
+        <Button style={{marginLeft: "5"}}>Get actual</Button>
+
+
 
       </Flex>
   );

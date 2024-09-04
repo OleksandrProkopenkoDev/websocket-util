@@ -133,7 +133,7 @@ const ManageBar: FC<ManageBarProps> = ({
       };
 
       client.onDisconnect = (error) => {
-        console.error('Disconnected:', error);
+        console.error('Disconnected 🔴:', error);
         setIsConnected(false);
         setIsConnection(false);
         notification.error({ message: "Disconnected from WebSocket" });
@@ -144,15 +144,11 @@ const ManageBar: FC<ManageBarProps> = ({
     } else {
       setIsConnected(false)
       setStatus('Disconnected 🔴')
-      if (client) {
-        client.disconnect(() => {
-          console.log('Disconnected 🔴')
-        })
-      }
+
     }
     return () => {
       if (client) {
-        client.disconnect(() => console.log('Disconnected 🔴'));
+        client.forceDisconnect()
       }
     };
   }
