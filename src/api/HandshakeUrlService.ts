@@ -1,64 +1,32 @@
-import {getAllTokenItems, IToken, saveTokensList} from "./TokenService.ts";
+import {GenericStorageService} from "./GenericStorageService.ts";
 
-const NAME = "handshakeUrls"
 export interface HandshakeListItem {
   url : string
   addedOn : Date;
 }
+const handshakeService = new GenericStorageService<HandshakeListItem>("handshakeUrls", "url");
 
-export const saveHandshakeUrlIfNotSaved = (url : string) => {
-  let handshakeListItems = getAllHandshakesUrlsItems();
-  let handshake = handshakeListItems.find((e) => e.url === url)
-  if (!handshake) {
-    addHandshakesUrl(url)
-  } else {
-    handshake.addedOn = new Date();
-    saveHandshakeList(handshakeListItems)
-  }
+export const saveHandshakeUrlIfNotSaved = (url: string) => {
+  const newItem: HandshakeListItem = { url, addedOn: new Date() };
+  handshakeService.saveItemIfNotSaved(newItem);
+};
+
+export const updateHandshakeUrlDate = (url: string) => {
+  handshakeService.updateItemDate(url);
+};
+
+export const getAllHandshakesUrls = (): string[] => {
+  return handshakeService.getAllItemsSortedByDate();
+};
+
+export const getAllHandshakesUrlsItems = (): HandshakeListItem[] => {
+  return handshakeService.getAllItems();
+};
+
+export const saveHandshakeList = (list : HandshakeListItem[]) => {
+  handshakeService.saveItemsList(list)
 }
 
-export const updateHandshakeUrlDate = (url : string) => {
-  let handshakeListItems = getAllHandshakesUrlsItems();
-  let item = handshakeListItems.find((e) => e.url === url)
-  if (item) {
-    item.addedOn = new Date();
-    saveHandshakeList(handshakeListItems)
-  }
-}
-
-export const getAllHandshakesUrls = () : string[] =>  {
-  return getAllHandshakesUrlsItems()
-  .sort(function(a,b){
-    return new Date(b.addedOn) - new Date(a.addedOn);
-  })
-  .map((e) => e.url)
-}
-
-const addHandshakesUrl = (url : string) => {
-  let list =getAllHandshakesUrlsItems();
-  let item : HandshakeListItem = {
-    url : url,
-    addedOn : new Date()
-  }
-  list.push(item)
-  saveHandshakeList(list)
-}
-
-export const removeHandshakeUrlItem = (url : string) => {
-  let list =getAllHandshakesUrlsItems();
-  let newList = list.filter((e) => e.url !== url)
-  saveHandshakeList(newList)
-}
-
-export const getAllHandshakesUrlsItems = () : HandshakeListItem[] =>  {
-  let list = JSON.parse(localStorage.getItem(NAME));
-  if (list === null) {
-    saveHandshakeList([])
-    return []
-  }
-  return list;
-}
-
-export const saveHandshakeList = (list :  HandshakeListItem[]) => {
-  localStorage.setItem(NAME, JSON.stringify(list))
-}
+export const removeHandshakeUrlItem = (url: string) => {
+  handshakeService.removeItem(url);
+};

@@ -9,12 +9,12 @@ import {
   SubscriptionListItem
 } from "./SubscriptionService.ts";
 import {
-  getAllHandshakesUrls,
   getAllHandshakesUrlsItems,
-  HandshakeListItem, saveHandshakeList
+  HandshakeListItem,
+  saveHandshakeList
 } from "./HandshakeUrlService.ts";
 
-export interface AppData {
+export interface  AppData {
   destinations : DestinationListItem[]
   subscriptions : SubscriptionListItem[]
   handshakesUrls : HandshakeListItem[]

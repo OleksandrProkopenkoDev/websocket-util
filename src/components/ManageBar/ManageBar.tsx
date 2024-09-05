@@ -5,7 +5,11 @@ import { Client } from '@stomp/stompjs';
 import SockJS from 'sockjs-client';
 import {Subscription} from "../../types/Subscription.ts";
 import JsonEditorComponent from "../JsonEditorComponent.tsx";
-import {getAllSubscriptions, removeSubscriptionItem} from "../../api/SubscriptionService.ts";
+import {
+  getAllSubscriptions,
+  removeSubscriptionItem,
+  subscriptionService
+} from "../../api/SubscriptionService.ts";
 import SubscriptionList from "../SubscriptionList/SubscriptionList.tsx";
 import {
   DestinationListItem,
@@ -48,7 +52,7 @@ const ManageBar: FC<ManageBarProps> = ({
   const [jsonInput, setJsonInput] = useState<string>('');
 
   useEffect(() => {
-    setSubscriptionList(getAllSubscriptions())
+    setSubscriptionList(subscriptionService.getAll())
   }, [localStorage.getItem("subscriptions")]);
 
   useEffect(() => {

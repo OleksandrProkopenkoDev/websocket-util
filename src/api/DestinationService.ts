@@ -1,81 +1,64 @@
+import {GenericStorageService} from "./GenericStorageService.ts";
 
-const NAME = "destinations"
+const NAME = "destinations";
+
 export interface DestinationListItem {
-  destination : string
-  addedOn : Date
-  jsonTemplates : JsonTemplate[]
+  destination: string;
+  addedOn: Date;
+  jsonTemplates: JsonTemplate[];
 }
 
 export interface JsonTemplate {
-  json : string,
-  lastOpenedOn : Date
+  json: string;
+  lastOpenedOn: Date;
 }
 
-const defaultTemplate : JsonTemplate =
-    {
-      json : JSON.stringify({
-        id: 1
-      }),
-      lastOpenedOn : new Date()
-    }
+const defaultTemplate: JsonTemplate = {
+  json: JSON.stringify({ id: 1 }),
+  lastOpenedOn: new Date(),
+};
 
-export const saveDestinationIfNotSaved = (destination : string) => {
-  let destinations = getAllDestinations();
+const destinationService = new GenericStorageService<DestinationListItem>(NAME, "destination");
+
+export const saveDestinationIfNotSaved = (destination: string) => {
+  const destinations = getAllDestinations();
   if (!destinations.includes(destination)) {
-    addDestinationItem(destination)
+    addDestinationItem(destination);
   }
-}
+};
 
-export const getAllDestinations = () : string[] =>  {
-  return getAllDestinationsItems()
-  .sort(function(a,b){
-    return new Date(b.addedOn) - new Date(a.addedOn);
-  })
-  .map((e) => e.destination)
-}
-
-export const UpdateDestination = (destination : DestinationListItem) => {
-  let list = getAllDestinationsItems();
- let elem =  list.find((e) => e.destination === destination.destination)
-  if (elem) {
-    list[list.indexOf(elem)] = destination;
-    saveDestinationsList(list)
-  } else console.error("not found")
-}
-
-const addDestinationItem = (destination : string) => {
-  let list =getAllDestinationsItems();
-  let item : DestinationListItem = {
-    destination : destination,
-    addedOn : new Date(),
-    jsonTemplates: [
-        defaultTemplate,
-        defaultTemplate,
-        defaultTemplate
-    ]
-  }
-  list.push(item)
-  saveDestinationsList(list)
-}
-
-export const removeDestinationsItem = (destination : string) => {
-  let list = getAllDestinationsItems();
-  let newList = list.filter((e) => e.destination !== destination)
-  saveDestinationsList(newList)
-}
+export const getAllDestinations = (): string[] => {
+  return destinationService.getAllItemsSortedByDate();
+};
 
 export const getAllDestinationsItems = (): DestinationListItem[] => {
-  let list = localStorage.getItem(NAME)
-  if (list) {
-    return JSON.parse(list).sort(function (a, b) {
-      return new Date(b.addedOn) - new Date(a.addedOn);
-    });
-  } else {
-    saveDestinationsList([])
-    return []
-  }
+    return destinationService.getAllItems()
+}
+export const saveDestinationsList = (list : DestinationListItem[]) => {
+    return destinationService.saveItemsList(list);
 }
 
-export const saveDestinationsList = (list :  DestinationListItem[]) => {
-  localStorage.setItem(NAME, JSON.stringify(list))
-}
+export const updateDestination = (destination: DestinationListItem) => {
+  const existingItems = destinationService.getAllItems();
+  const existingItem = existingItems.find(item => item.destination === destination.destination);
+
+  if (existingItem) {
+    existingItems[existingItems.indexOf(existingItem)] = destination;
+    destinationService.saveItemIfNotSaved(destination);
+  } else {
+    console.error("Destination not found");
+  }
+};
+
+const addDestinationItem = (destination: string) => {
+  const newItem: DestinationListItem = {
+    destination: destination,
+    addedOn: new Date(),
+    jsonTemplates: [defaultTemplate, defaultTemplate, defaultTemplate],
+  };
+  destinationService.addItem(newItem);
+};
+
+export const removeDestinationItem = (destination: string) => {
+  destinationService.removeItem(destination);
+};
