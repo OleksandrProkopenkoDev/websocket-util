@@ -26,7 +26,8 @@
 :root {
   --border-color: #B5B0B;
   --text-color: #fafafa;
-  --select-container-color: var(--text-color)
+  --select-container-color: var(--text-color);
+  --disabled-bg-color: #070f25
 }
 
 .text {

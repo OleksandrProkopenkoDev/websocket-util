@@ -11,6 +11,7 @@ import {
 import {b} from "vite/dist/node/types.d-aGj9QkWt";
 
 interface RequestTokensTabProps {
+  onSelectToken : (selectedTokenItem: TokenListItem) => void
   handshakeUrl : string
   tokens : TokenListItem[]
   onRemove : (label: string) => void
@@ -26,7 +27,7 @@ const getApiUrlFromProvidedHandshakeUrl = (handshakeUrl? : string) => {
 }
 
 
-const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshakeUrl, setTokens}) => {
+const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshakeUrl, setTokens, onSelectToken}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('')
   const [label, setLabel] = useState('');
@@ -110,7 +111,7 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshake
 
   return (
       <>
-        <TokensList tokens={tokens} onRemove={onRemove}/>
+        <TokensList onSelectToken={onSelectToken}  tokens={tokens} onRemove={onRemove}/>
 
         <Divider orientation={"left"} style={{margin: '8px 0'}}>Add new request</Divider>
         <Flex vertical   style={{padding: '0 8px 4px', fontSize: 18, width: "100%"}}

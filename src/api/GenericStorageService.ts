@@ -23,7 +23,9 @@ export class GenericStorageService<T extends { addedOn: Date }> {
     let items = this.getAllItems();
     let item = items.find(e => e[this.identityField] === identityValue);
     if (item) {
+      console.log("item found update date !")
       item.addedOn = new Date();
+      console.log(items)
       this.saveItemsList(items);
     }
   }

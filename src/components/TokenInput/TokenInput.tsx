@@ -28,7 +28,18 @@ interface TokenInputProps {
   setToken: (value: (((prevState: TokenListItem) => TokenListItem) | TokenListItem)) => void
 }
 
-let index = 0;
+const getTokenInfo = (token : TokenListItem) => {
+  return <Flex vertical>
+    <span style={{color: "green"}}>Token:</span> {token.token}
+    {token.user &&
+      <Flex vertical>
+        <span style={{color: "green"}}>ID :</span> {token.user.id}
+        <span style={{color: "green"}}>UserName :</span> {token.user.userName}
+        <span style={{color: "green"}}>userEmail :</span> {token.user.userEmail}
+      </Flex>
+    }
+  </Flex>
+}
 
 const TokenInput: FC<TokenInputProps> = ({
                                            selectedToken,
@@ -52,7 +63,7 @@ const TokenInput: FC<TokenInputProps> = ({
       setToken(arr[0])
     }
     setTokens(arr)
-  }, [localStorage.getItem(TOKEN_STORAGE_NAME)]);
+  }, []);
 
 
   const onRemove = (label: string) => {
@@ -60,12 +71,13 @@ const TokenInput: FC<TokenInputProps> = ({
     removeTokenItem(label)
   }
 
-  // const onSelectToken = (label: string, tokenItem: any) => {
-  //   console.log("onSelectToken", tokenItem)
-  //   const selected: TokenListItem = {token: tokenItem.value, label: tokenItem.label}
-  //   updateTokenDate(selected.label)
-  //   setToken(selected)
-  // }
+  const onSelectToken = (selectedTokenItem : TokenListItem) => {
+    console.log("onSelectToken", selectedTokenItem)
+
+    updateTokenDate(selectedTokenItem.label)
+    setToken(selectedTokenItem)
+    setIsOpen(false)
+  }
 
   const onChange = (key: string) => {
     console.log(key);
@@ -76,7 +88,7 @@ const TokenInput: FC<TokenInputProps> = ({
       key: '1',
       label: 'Tokens from requests',
       children:
-          <RequestTokensTab
+          <RequestTokensTab onSelectToken={onSelectToken}
               handshakeUrl={handshakeUrl}
               tokens={tokens.filter((e) => e.request !== undefined)}
               onRemove={onRemove}
@@ -88,8 +100,9 @@ const TokenInput: FC<TokenInputProps> = ({
       label: 'Saved tokens',
       children:
           <SavedTokensTab setTokens={setTokens}
-                          tokens={tokens}
+                          tokens={tokens.filter((e) => e.request === undefined)}
                           onRemove={onRemove}
+                          onSelectToken={onSelectToken}
           />
 
     }
@@ -105,79 +118,25 @@ const TokenInput: FC<TokenInputProps> = ({
         <span className={"pt-sans-regular text"}
               style={{fontWeight: "bold", marginRight: 10}}>Token: </span>
 
-        {/*<Select*/}
-        {/*    style={{height: "41"}}*/}
-        {/*    disabled={isConnected}*/}
-        {/*    optionRender={(option) => renderOption(option)}*/}
-        {/*    value={''}*/}
-        {/*    onSelect={onSelectToken}*/}
-        {/*    dropdownRender={(menu) => (*/}
-        {/*        <>*/}
-        {/*          /!*<Tabs defaultActiveKey="1" items={items} onChange={onChange} />*!/*/}
-
-        {/*          <Divider orientation={"left"} style={{margin: '8px 0'}}>Tokens from requests</Divider>*/}
-        {/*          <Divider orientation={"left"} style={{margin: '8px 0'}}>Saved tokens</Divider>*/}
-        {/*          {menu}*/}
-        {/*          <Divider style={{margin: '8px 0'}}/>*/}
-        {/*          <Input style={{fontSize: 12, width: "100%"}}*/}
-        {/*                 className={"pt-sans-regular"}*/}
-        {/*                 value={newToken}*/}
-        {/*                 placeholder="Token"*/}
-        {/*                 onChange={(e) => setNewToken(e.target.value)}*/}
-        {/*          />*/}
-
-        {/*          <Divider style={{margin: '8px 0'}}/>*/}
-        {/*          <Space style={{padding: '0 8px 4px'}}>*/}
-        {/*            <Input*/}
-        {/*                placeholder="Token label"*/}
-        {/*                ref={inputRef}*/}
-        {/*                value={label}*/}
-        {/*                onChange={onNameChange}*/}
-        {/*                onKeyDown={(e) => e.stopPropagation()}*/}
-        {/*            />*/}
-        {/*            <Button type="text" icon={<CopyOutlined/>} onClick={onGetFromClipboard}>*/}
-        {/*              Get token from clipboard*/}
-        {/*            </Button>*/}
-        {/*            <Button type="text" icon={<PlusOutlined/>} onClick={addToken}>*/}
-        {/*              Add token*/}
-        {/*            </Button>*/}
-        {/*          </Space>*/}
-        {/*        </>*/}
-        {/*    )}*/}
-        {/*    dropdownStyle={{width: 550}}*/}
-        {/*    options={tokens.map((item) => ({*/}
-        {/*      value: item.token + "",*/}
-        {/*      label: item.label + "",*/}
-        {/*      key: "label-" + item.label*/}
-        {/*    }))}*/}
-        {/*/>*/}
-
-
-        <Tooltip title={<span style={{fontSize: 15,}}>{token === null ? "null" : token.token }</span>}>
-          <span style={{
+        <Tooltip placement={"bottomRight"} title={<span style={{fontSize: 15,}}>{token === null ? "null" :  getTokenInfo(token) }</span>}>
+          <span  style={{
             borderLeft: "black 1px solid",
             fontSize: 20,
             maxWidth: 350,
-            background: "var(--select-container-color)",
+            backgroundColor: isConnected ? "var(--disabled-bg-color)" : "var(--text-color)",
+            color: isConnected ? "#ababab" : "black",
             padding: "5px 11px", height: 31
           }}
                 className={"pt-sans-regular"}>{token === null ? "null" : token.label }</span>
 
         </Tooltip>
 
-        <Button onClick={() => setIsOpen(true)}>SelectToken</Button>
+        <Button style={{height: 41, marginTop: 0}} type={"primary"} disabled={isConnected} onClick={() => setIsOpen(true)}>SelectToken</Button>
         <Modal width={700} onOk={() => setIsOpen(false)} open={isOpen} onCancel={() => setIsOpen(false)}>
 
           <Tabs defaultActiveKey="1" items={tabItems} onChange={onChange}/>
 
         </Modal>
-
-        {/*<Button type={"primary"} style={{marginLeft: "5", height: 41, marginTop: 0}}>Get*/}
-        {/*  actual</Button>*/}
-
-        {/*<Tooltip  className={"text"}  title={<span style={{ fontSize: 15, }}><a target={"_blank"} href="https://jwt.io/">Build token</a></span>}>*/}
-        {/*  <InfoCircleOutlined  style={{marginLeft: 5}} />*/}
-        {/*</Tooltip>*/}
       </Flex>
   );
 };

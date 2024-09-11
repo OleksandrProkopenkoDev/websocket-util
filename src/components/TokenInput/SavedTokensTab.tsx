@@ -5,19 +5,20 @@ import {saveTokenIfNotSaved, TokenListItem} from "../../api/TokenService.ts";
 import TokensList from "./TokensList.tsx";
 
 interface SavedTokensTabProps {
+  onSelectToken : (selectedTokenItem: TokenListItem) => void
   tokens : TokenListItem[]
   onRemove : (label: string) => void
   setTokens: (value: (((prevState: TokenListItem[]) => TokenListItem[]) | TokenListItem[])) => void
 
 }
 
-const SavedTokensTab:FC<SavedTokensTabProps> = ({tokens, onRemove, setTokens}) => {
+const SavedTokensTab:FC<SavedTokensTabProps> = ({tokens, onRemove, setTokens, onSelectToken}) => {
   const [newToken, setNewToken] = useState('');
   const [label, setLabel] = useState('');
 
   const addToken = () => {
     try {
-      const saved = saveTokenIfNotSaved(label, newToken)
+      const saved = saveTokenIfNotSaved(newToken, label)
       console.log("saved token", saved)
       tokens.push(saved)
       setTokens(tokens)
@@ -35,7 +36,7 @@ const SavedTokensTab:FC<SavedTokensTabProps> = ({tokens, onRemove, setTokens}) =
 
   return (
       <>
-        <TokensList tokens={tokens} onRemove={onRemove}/>
+        <TokensList onSelectToken={onSelectToken} tokens={tokens} onRemove={onRemove}/>
 
         <Divider orientation={"left"} style={{margin: '8px 0'}}>Add new token</Divider>
         <Space style={{padding: '0 8px 4px'}}>

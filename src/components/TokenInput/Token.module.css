@@ -1,0 +1,12 @@
+
+.token {
+  transition: 300ms;
+}
+
+.token:hover {
+  background-color: #a6bce7 !important;
+}
+
+.token:active {
+  background-color: #ced7f3 !important;
+}

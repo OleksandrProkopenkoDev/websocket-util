@@ -50,8 +50,10 @@ export const saveRequestTokenIfNotSaved = (token: string, label: string, request
 };
 
 export const getAllTokenItems = (): TokenListItem[] => {
-  return tokenService.getAllItems();
+  return tokenService.getAllItems().sort((a, b) => new Date(b.addedOn).getTime() - new Date(a.addedOn).getTime());
 };
+
+
 
 export const getAllRequestTokens = () : TokenListItem[] => {
   return tokenService.getAllItems().filter((token) => token.request !== undefined)

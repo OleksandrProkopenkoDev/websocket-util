@@ -67,7 +67,7 @@ const HandshakeInput:FC<HandshakeInputProps> = ({handshakeUrl, setHandshakeUrl, 
               label: item,
             }))}
         />
-        <Input style={{fontSize: 20, minWidth: 350}}
+        <Input style={{fontSize: 20, minWidth: 350, height: 41}}
                className={"pt-sans-regular"}
                disabled={isConnected}
                value={handshakeUrl}
