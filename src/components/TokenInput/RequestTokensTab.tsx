@@ -1,15 +1,20 @@
 import React, {FC, useState} from 'react';
 import TokensList from "./TokensList.tsx";
-import {Button, Divider, Flex, Input, Space} from "antd";
+import {Button, Divider, Flex, Input, message, notification, Space} from "antd";
 import {CheckOutlined, CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";
-import {LoginRequest, LoginResponse, TokenListItem} from "../../api/TokenService.ts";
+import {
+  LoginRequest,
+  LoginResponse,
+  saveRequestTokenIfNotSaved,
+  TokenListItem
+} from "../../api/TokenService.ts";
 import {b} from "vite/dist/node/types.d-aGj9QkWt";
 
 interface RequestTokensTabProps {
   handshakeUrl : string
   tokens : TokenListItem[]
   onRemove : (label: string) => void
-  addToken : (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => void
+  setTokens: (value: (((prevState: TokenListItem[]) => TokenListItem[]) | TokenListItem[])) => void
 }
 
 const getApiUrlFromProvidedHandshakeUrl = (handshakeUrl? : string) => {
@@ -21,7 +26,7 @@ const getApiUrlFromProvidedHandshakeUrl = (handshakeUrl? : string) => {
 }
 
 
-const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, addToken, handshakeUrl}) => {
+const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshakeUrl, setTokens}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('')
   const [label, setLabel] = useState('');
@@ -30,6 +35,40 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, addToken,
   const [isRequestSuccessful, setIsRequestSuccessful] = useState<boolean | null>(null)
   const [response, setResponse] = useState<LoginResponse>(null);
 
+  const sendWarning = (message : string, description? : string) => {
+    notification.warning({message: message, description});
+  }
+
+  const onAddRequest = async () => {
+    if (isRequestSuccessful === null) {
+      await onVerifyCredentials();
+      if (!isRequestSuccessful) {
+        return;
+      }
+    }
+    if (!isRequestSuccessful) {
+      sendWarning("Provided credentials is not valid")
+      return
+    }
+    if (!label) {
+      sendWarning("Provide a token label")
+      return
+    }
+    const request : LoginRequest = {
+      userEmail : email,
+      password: password,
+      serverApiUrl : serverApiUrl
+    }
+    console.log("request", request)
+    console.log("user", response.userDto)
+    console.log("token", response.token)
+    console.log("label", label)
+
+    const saved = saveRequestTokenIfNotSaved(response.token, label, request, response.userDto)
+    tokens.push(saved)
+    setTokens(tokens)
+
+  }
 
   const onVerifyCredentials = async () => {
     const requestBody : LoginRequest  = {
@@ -43,11 +82,12 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, addToken,
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(requestBody), // Convert JavaScript object to JSON
+      body: JSON.stringify(requestBody)
     })
     .then(response => {
       setIsLoading(false)
       if (response.status != '200') {
+        sendWarning("Error happend during request", "status code is " + response.status)
         setIsRequestSuccessful(false)
         return null;
       }
@@ -61,6 +101,7 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, addToken,
       }
     })
     .catch(error => {
+      sendWarning("Error happend during request", error)
       setIsRequestSuccessful(false)
       setIsLoading(false)
       console.error('Error:', error);
@@ -107,8 +148,8 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, addToken,
             </Flex>
           </Flex>
 
-          <Button style={{marginTop: 0, maxWidth: 200}} type="text" icon={<PlusOutlined/>} onClick={addToken}>
-            Add request and get token
+          <Button style={{marginTop: 0, maxWidth: 200}} type="text" icon={<PlusOutlined/>} onClick={onAddRequest}>
+            Add request and token
           </Button>
         </Flex>
       </>

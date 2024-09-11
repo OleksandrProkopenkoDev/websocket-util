@@ -29,18 +29,24 @@ interface UserDto {
 
 const tokenService = new GenericStorageService<TokenListItem>("tokens", "label");
 
-export const saveTokenIfNotSaved = (token: string, label : string) => {
+export const saveTokenIfNotSaved = (token: string, label : string) : TokenListItem => {
   const newItem: TokenListItem = { token, addedOn: new Date(), label: label };
-  tokenService.saveItemIfNotSaved(newItem);
+  return tokenService.saveItemIfNotSaved(newItem);
 };
 
 export const updateTokenDate = (label: string) => {
   tokenService.updateItemDate(label);
 };
 
-export const saveRequestTokenIfNotSaved = (token: string, label : string) => {
-  const newItem: TokenListItem = { token, addedOn: new Date(), label: label };
-  tokenService.saveItemIfNotSaved(newItem);
+export const saveRequestTokenIfNotSaved = (token: string, label: string, request: LoginRequest, user: UserDto) : TokenListItem => {
+  const newItem: TokenListItem = {
+    token,
+    addedOn: new Date(),
+    label: label,
+    request: request,
+    user: user
+  };
+  return  tokenService.saveItemIfNotSaved(newItem);
 };
 
 export const getAllTokenItems = (): TokenListItem[] => {

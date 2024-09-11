@@ -39,10 +39,14 @@ const TokenInput: FC<TokenInputProps> = ({
                                          }) => {
   const [isOpen, setIsOpen] = useState<boolean>(false)
   const [tokens, setTokens] = useState<TokenListItem[]>([])
-  const [newToken, setNewToken] = useState('');
-  const [label, setLabel] = useState('');
 
   useEffect(() => {
+    console.log("upd tokens")
+  }, [tokens]);
+
+
+  useEffect(() => {
+    console.log("useEffect getAllTokenItems localStorage.getItem(TOKEN_STORAGE_NAME)")
     let arr = getAllTokenItems();
     if (arr[0]) {
       setToken(arr[0])
@@ -55,18 +59,6 @@ const TokenInput: FC<TokenInputProps> = ({
     setTokens((prevState) => prevState.filter((e) => e.token !== label))
     removeTokenItem(label)
   }
-
-  const addToken = (e: React.MouseEvent<HTMLButtonElement | HTMLAnchorElement>) => {
-    try {
-      e.preventDefault();
-      saveTokenIfNotSaved(label, newToken)
-
-      setLabel('');
-      setNewToken('')
-    } catch (err) {
-      notification.warning({message: 'Failed to add newToken: ' + err})
-    }
-  };
 
   // const onSelectToken = (label: string, tokenItem: any) => {
   //   console.log("onSelectToken", tokenItem)
@@ -84,13 +76,21 @@ const TokenInput: FC<TokenInputProps> = ({
       key: '1',
       label: 'Tokens from requests',
       children:
-          <RequestTokensTab handshakeUrl={handshakeUrl} tokens={tokens.filter((e) => e.request !== undefined)} onRemove={onRemove} addToken={addToken}/>
+          <RequestTokensTab
+              handshakeUrl={handshakeUrl}
+              tokens={tokens.filter((e) => e.request !== undefined)}
+              onRemove={onRemove}
+              setTokens={setTokens}
+          />
     },
     {
       key: '2',
       label: 'Saved tokens',
       children:
-          <SavedTokensTab tokens={tokens} onRemove={onRemove} addToken={addToken} />
+          <SavedTokensTab setTokens={setTokens}
+                          tokens={tokens}
+                          onRemove={onRemove}
+          />
 
     }
   ];

@@ -7,14 +7,15 @@ export class GenericStorageService<T extends { addedOn: Date }> {
     this.identityField = identityField;
   }
 
-  public saveItemIfNotSaved(item: T) {
+  public saveItemIfNotSaved(item: T) : T {
     let items = this.getAllItems();
     let existingItem = items.find(e => e[this.identityField] === item[this.identityField]);
     if (!existingItem) {
-      this.addItem(item);
+      return this.addItem(item);
     } else {
       existingItem.addedOn = new Date();
       this.saveItemsList(items);
+      return existingItem;
     }
   }
 
@@ -33,10 +34,11 @@ export class GenericStorageService<T extends { addedOn: Date }> {
     .map(e => e[this.identityField]);
   }
 
-  public addItem(item: T) {
+  public addItem(item: T) : T {
     let items = this.getAllItems();
     items.push(item);
     this.saveItemsList(items);
+    return item
   }
 
   public removeItem(identityValue: T[keyof T]) {
