@@ -9,38 +9,35 @@ interface LogsListProps {
   setMessages: (value: (((prevState: ILogItem[]) => ILogItem[]) | ILogItem[])) => void
 }
 
-const LogsList:FC<LogsListProps> = ({messages, setMessages}) => {
+const LogsList: FC<LogsListProps> = ({messages, setMessages}) => {
   return (
+      <Flex className={"logsList"} gap={5} style={{
+        backgroundColor: "white",
+        padding: 10,
+        overflowY: "scroll",
+        overflowX: "scroll",
+        width: 600
+      }}>
+        <Flex style={{position: "sticky", top: 0}}>
 
-        <Flex className={"logsList"} gap={5} style={{
-          backgroundColor: "white",
-          padding: 10,
-          overflowY: "scroll",
-          overflowX: "scroll",
-          width: 600
-        }}>
-          <Flex style={{position: "sticky", top: 0}}>
+          <Button icon={<DeleteOutlined style={{fontSize: 20}}/>}
+                  title={"Clear all"}
 
-            <Button icon={<DeleteOutlined style={{fontSize: 20}}/>}
-                    title={"Clear all"}
-
-                    onClick={() => setMessages([])}
-            />
-          </Flex>
-
-          <List dataSource={messages}
-                renderItem={(item) => (
-                    <List.Item key={"log-" + Math.random()}
-                               style={{padding: 2, margin: 1, fontSize: 20}}
-                               className={"pt-sans-regular"}>
-
-                      <LogItem logItem={item}/>
-                    </List.Item>
-                )}
+                  onClick={() => setMessages([])}
           />
         </Flex>
 
+        <List dataSource={messages}
+              renderItem={(item) => (
+                  <List.Item key={"log-" + Math.random()}
+                             style={{padding: 2, margin: 1, fontSize: 20}}
+                             className={"pt-sans-regular"}>
 
+                    <LogItem logItem={item}/>
+                  </List.Item>
+              )}
+        />
+      </Flex>
   );
 };
 

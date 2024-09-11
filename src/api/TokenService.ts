@@ -1,4 +1,4 @@
-import {saveDestinationsList} from "./DestinationService.ts";
+import {GenericStorageService} from "./GenericStorageService.ts";
 
 export const TOKEN_STORAGE_NAME = "tokens"
 
@@ -6,77 +6,54 @@ export interface TokenListItem {
   label : string
   token: string
   addedOn: Date;
-}
-export interface IToken {
-  label : string
-  token: string
+  request? : LoginRequest
+  user? : UserDto
 }
 
-export const saveToken = (label : string, token: string) => {
-  let tokensListItems = getAllTokenItems();
-  let tokenListItem = tokensListItems.find((e) => e.token === token)
-  if (!tokenListItem) {
-    addTokenItem(label,token)
-  } else {
-    tokenListItem.addedOn = new Date();
-    saveTokensList(tokensListItems)
-  }
+export interface LoginRequest {
+  serverApiUrl? : string
+  userEmail: string
+  password : string
 }
 
-export const updateTokenDate = (token : IToken) => {
-  let tokensListItems = getAllTokenItems();
-  let tokenListItem = tokensListItems.find((e) => e.token === token.token)
-  if (tokenListItem) {
-    tokenListItem.addedOn = new Date();
-    saveTokensList(tokensListItems)
-  }
+export interface LoginResponse {
+  token : string
+  userDto : UserDto
 }
 
-export const getAllTokens = (): string[] => {
-  return getAllTokenItems()
-  .sort(function (a, b) {
-    return new Date(b.addedOn) - new Date(a.addedOn);
-  })
-  .map((e) => e.token)
+interface UserDto {
+  id: number
+  userName : string ,
+  userEmail: string
 }
 
-const addTokenItem = (label : string, url: string) => {
-  let list = getAllTokenItems();
-  let item: TokenListItem = {
-    label : label,
-    token: url,
-    addedOn: new Date()
-  }
-  list.push(item)
-  saveTokensList(list)
-}
+const tokenService = new GenericStorageService<TokenListItem>("tokens", "label");
 
-export const removeTokenItem = (label: string) => {
-  let list = getAllTokenItems();
-  let newList = list.filter((e) => e.label !== label)
-  saveTokensList(newList)
-}
+export const saveTokenIfNotSaved = (token: string, label : string) => {
+  const newItem: TokenListItem = { token, addedOn: new Date(), label: label };
+  tokenService.saveItemIfNotSaved(newItem);
+};
+
+export const updateTokenDate = (label: string) => {
+  tokenService.updateItemDate(label);
+};
+
+export const saveRequestTokenIfNotSaved = (token: string, label : string) => {
+  const newItem: TokenListItem = { token, addedOn: new Date(), label: label };
+  tokenService.saveItemIfNotSaved(newItem);
+};
 
 export const getAllTokenItems = (): TokenListItem[] => {
-  let list = localStorage.getItem(TOKEN_STORAGE_NAME)
-  if (list) {
-    return JSON.parse(list).sort(function (a, b) {
-      return new Date(b.addedOn) - new Date(a.addedOn);
-    });
-  } else {
-    saveDestinationsList([])
-    return []
-  }
+  return tokenService.getAllItems();
+};
 
-
-  // let list = JSON.parse(localStorage.getItem(TOKEN_STORAGE_NAME));
-  // if (list === null) {
-  //   saveTokensList([])
-  //   return []
-  // }
-  // return list;
+export const getAllRequestTokens = () : TokenListItem[] => {
+  return tokenService.getAllItems().filter((token) => token.request !== undefined)
 }
+export const saveTokensList = (list : TokenListItem[]) => {
+  return tokenService.saveItemsList(list);
+};
 
-export const saveTokensList = (list: TokenListItem[]) => {
-  localStorage.setItem(TOKEN_STORAGE_NAME, JSON.stringify(list))
-}
+export const removeTokenItem = (label: string) => {
+  tokenService.removeItem(label);
+};

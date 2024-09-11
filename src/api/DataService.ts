@@ -13,11 +13,13 @@ import {
   HandshakeListItem,
   saveHandshakeList
 } from "./HandshakeUrlService.ts";
+import {getAllTokenItems, saveTokensList, TokenListItem} from "./TokenService.ts";
 
 export interface  AppData {
   destinations : DestinationListItem[]
   subscriptions : SubscriptionListItem[]
   handshakesUrls : HandshakeListItem[]
+  tokens : TokenListItem[]
 }
 
 /**
@@ -26,12 +28,14 @@ export interface  AppData {
 export const exportAllDataAsJson = () => {
   let destinations = getAllDestinationsItems()
   let subscriptions = getAllSubscriptionsItems()
-  let  handshakesUrls = getAllHandshakesUrlsItems()
+  let handshakesUrls = getAllHandshakesUrlsItems()
+  let tokens = getAllTokenItems()
 
   return {
     destinations : destinations,
     subscriptions : subscriptions,
-    handshakesUrls : handshakesUrls
+    handshakesUrls : handshakesUrls,
+    tokens : tokens
   }
 }
 
@@ -39,4 +43,5 @@ export const importAllData = (data : AppData) => {
   saveDestinationsList(data.destinations)
   saveSubscriptionsList(data.subscriptions)
   saveHandshakeList(data.handshakesUrls)
+  saveTokensList(data.tokens)
 }

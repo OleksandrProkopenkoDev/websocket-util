@@ -6,6 +6,9 @@
   }
 }
 
+
+
+
 .pt-sans-regular {
   font-family: "PT Sans", sans-serif;
   font-weight: 400;
@@ -22,7 +25,7 @@
 }
 :root {
   --border-color: #B5B0B;
-  --text-color: #d9d9d9;
+  --text-color: #fafafa;
   --select-container-color: var(--text-color)
 }
 

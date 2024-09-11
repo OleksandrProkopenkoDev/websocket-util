@@ -22,7 +22,7 @@ import DestinationInput from "../DestinationInput/DestinationInput.tsx";
 import SubscribeInput from "../SubscribeInput/SubscribeInput.tsx";
 import ConnectBtn from "../ConnectBtn/ConnectBtn.tsx";
 import TokenInput from "../TokenInput/TokenInput.tsx";
-import {IToken, TokenListItem} from "../../api/TokenService.ts";
+import {TokenListItem} from "../../api/TokenService.ts";
 
 interface ManageBarProps {
   messages: ILogItem[]
@@ -39,7 +39,7 @@ const ManageBar: FC<ManageBarProps> = ({
                                        }) => {
   const [status, setStatus] = useState<string>('Disconnected 🔴');
   const [handshakeUrl, setHandshakeUrl] = useState("http://localhost:8080/")
-  const [token, setToken] = useState<IToken>({token: "invalid", label: "invalid"})
+  const [token, setToken] = useState<TokenListItem>(null)
   const [endpoint, setEndpoint] = useState<string>('');
   const [destination, setDestination] = useState<string>('');
   const [isConnection, setIsConnection] = useState<boolean>(false);
@@ -214,6 +214,7 @@ const ManageBar: FC<ManageBarProps> = ({
                                 setHandshakeUrl={setHandshakeUrl}
                 />
                 <TokenInput token={token}
+                            handshakeUrl={handshakeUrl}
                             isConnected={isConnected}
                             setToken={setToken}
                 />

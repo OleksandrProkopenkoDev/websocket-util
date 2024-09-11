@@ -15,7 +15,7 @@ function App() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   return (
-      <Flex className={"mainWrapper"} style={{height: "100vh", padding: 50}} justify={"space-between"}>
+      <Flex className={"mainWrapper"} style={{height: "100vh"}} justify={"space-between"}>
 
         <ConfigProvider theme={{
           components: {
@@ -27,6 +27,7 @@ function App() {
               colorBgContainer: 'var(--select-container-color)'
             },
             Input: {
+              fontSize: 18,
               borderRadius: 0,
               colorBgContainer: 'var(--select-container-color)'
             },
