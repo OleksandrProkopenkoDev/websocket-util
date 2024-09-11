@@ -63,9 +63,10 @@ const SubscribeInput: FC<SubscribeInputProps> = ({
 
   return (
       <Flex vertical  style={{width: "100%"}}>
-        <label htmlFor="endpoint">Subscribe to:</label>
+        <label className={"text"} style={{fontSize: 20}} htmlFor="endpoint">Subscribe to:</label>
         <Flex style={{width: "100%"}}>
           <Select
+              style={{borderRight: "solid 1px black"}}
               optionRender={(option) => {
                 return <Flex gap={5} align={"center"} justify={"space-between"}>
                   <span className={"pt-sans-regula"} style={{fontSize: 18}}>{option.label}</span>
@@ -91,7 +92,7 @@ const SubscribeInput: FC<SubscribeInputProps> = ({
                  onChange={(e) => setEndpoint(e.target.value)}
           />
           <Button type={"primary"}
-                  style={{marginLeft: 10}}
+                  style={{marginTop: 0, height: "inherit"}}
                   disabled={!isConnected || isSubscribeButtonDisabled}
                   onClick={OnSubscribe}>Subscribe</Button>
         </Flex>

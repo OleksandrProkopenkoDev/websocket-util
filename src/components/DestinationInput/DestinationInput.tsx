@@ -1,9 +1,8 @@
 import React, {FC} from 'react';
 import {Button, Flex, Input, Select} from "antd";
 import {
-  DestinationListItem,
-  removeDestinationsItem,
-  UpdateDestination
+  DestinationListItem, removeDestinationItem,
+  updateDestination
 } from "../../api/DestinationService.ts";
 import {CloseOutlined} from "@ant-design/icons";
 
@@ -29,7 +28,7 @@ const DestinationInput: FC<DestinationInputProps> = ({isConnected,
     let newDest = destinationsList.find((e) => e.destination === value);
     if (newDest) {
       newDest.addedOn = new Date()
-      UpdateDestination(newDest)
+      updateDestination(newDest)
     }
     setSelectedDestination(newDest)
     setDestination(value)
@@ -38,15 +37,19 @@ const DestinationInput: FC<DestinationInputProps> = ({isConnected,
   const renderOption = (value : string) => {
     return <Flex gap={5} align={"center"} justify={"space-between"}>
       <span className={"pt-sans-regula"} style={{fontSize: 18}}>{value}</span>
-      <Button danger onClick={() => removeDestinationsItem(value as string)}
+      <Button danger onClick={() => removeDestinationItem(value as string)}
               icon={<CloseOutlined/>}/>
     </Flex>
   }
 
   return (
-      <Flex style={{fontSize: 20}}  className={"pt-sans-regular"} align={"center"}>
-        <label htmlFor="destination" style={{marginRight: 10}}>Destination: </label>
+      <Flex style={{fontSize: 20}}
+            className={"pt-sans-regular"}
+            align={"center"}
+      >
+        <label htmlFor="destination"  className={"text"} style={{marginRight: 10}}>Destination: </label>
         <Select
+            style={{height: "100%", borderRight: "solid black 1px"}}
             optionRender={(option) => renderOption(option.value as string)}
             value={""}
             onSelect={onSelect}
@@ -57,7 +60,7 @@ const DestinationInput: FC<DestinationInputProps> = ({isConnected,
               label: item.destination,
             }))}
         />
-        <Input style={{fontSize: 20, maxWidth: 350}} className={"pt-sans-regular"}
+        <Input style={{fontSize: 20, maxWidth: 350, height: 43}} className={"pt-sans-regular"}
                type="text"
                id="destination"
                value={destination}
@@ -65,7 +68,7 @@ const DestinationInput: FC<DestinationInputProps> = ({isConnected,
         />
 
         <Button type={"primary"}
-                style={{marginLeft: 10}}
+                style={{marginTop: 0, height: 43}}
                 onClick={onSendMessage}
                 disabled={!isConnected}
         >Send Message</Button>

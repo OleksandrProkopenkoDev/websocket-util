@@ -47,12 +47,13 @@ const HandshakeInput:FC<HandshakeInputProps> = ({handshakeUrl, setHandshakeUrl, 
 
   return (
       <Flex style={{fontSize: 20}} align={"center"} className={"pt-sans-regular"}>
-        <span className={"pt-sans-regular"} style={{
+        <span className={"pt-sans-regular text"} style={{
           fontWeight: "bold",
           whiteSpace: "nowrap",
           marginRight: 10
         }}>Handshake url: </span>
         <Select
+            style={{borderRight: "solid 1px black"}}
             disabled={isConnected}
             optionRender={(option) => renderOption(option.value as string)}
             value={''}

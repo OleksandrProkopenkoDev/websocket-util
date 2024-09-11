@@ -1,13 +1,13 @@
-import React, {useEffect, useRef, useState} from 'react';
+import React, {useRef, useState} from 'react';
 import './App.css';
 import ManageBar from "./components/ManageBar/ManageBar.tsx";
-import {Button, ConfigProvider, Flex, List, Select} from "antd";
+import {ConfigProvider, Flex} from "antd";
 import {Subscription} from "./types/Subscription.ts";
-import {CloseOutlined, DeleteOutlined, DownloadOutlined} from "@ant-design/icons";
-import LogItem, {ILogItem} from "./components/LogItem/LogItem.tsx";
+import {ILogItem} from "./components/LogItem/LogItem.tsx";
 import AboutModal from "./components/AboutModal/AboutModal.tsx";
 import ImportData from "./components/ImportData/ImportData.tsx";
 import ExportData from "./components/ExportData/ExportData.tsx";
+import LogsList from "./components/LogsList/LogsList.tsx";
 
 function App() {
   const [messages, setMessages] = useState<ILogItem[]>([]);
@@ -15,55 +15,51 @@ function App() {
   const [subscriptions, setSubscriptions] = useState<Subscription[]>([]);
 
   return (
-      <Flex style={{height: "100vh"}} justify={"space-between"}>
-        <Flex style={{position: "absolute", left: 5, top: 0}}>
-          <ImportData/>
-          <ExportData/>
-          <AboutModal/>
-        </Flex>
-
+      <Flex className={"mainWrapper"} style={{height: "100vh", padding: 50}} justify={"space-between"}>
 
         <ConfigProvider theme={{
           components: {
-          Select: {
-            height: 50,
-            controlHeight : 41
+            Button : {
+              borderRadius : 0,
+              colorTextDisabled: "#ababab",
+              colorBgContainerDisabled : "#0f3e7e",
+              colorBorder : "rgba(7,28,59,0)",
+              colorBgContainer: 'var(--select-container-color)'
+            },
+            Input: {
+              borderRadius: 0,
+              colorBgContainer: 'var(--select-container-color)'
+            },
+            Select: {
+              borderRadius: 0,
+              height: 50,
+              controlHeight: 41,
+              colorBgContainer: 'var(--select-container-color)'
+            }
           }
-          }
-        }} >
+        }}>
 
-          <Flex style={{padding: 20, marginTop: 50}}>
-            <ManageBar messages={messages}
-                       setMessages={setMessages}
-                       subscriptionListRef={subscriptionListRef}
-                       subscriptions={subscriptions}
-                       setSubscriptions={setSubscriptions}
-            />
+          <Flex vertical style={{width: "100%"}}>
+
+            <Flex style={{backgroundColor: "#070f25", paddingBottom: 5, paddingLeft: 20}} gap={1}>
+              <ImportData/>
+              <ExportData/>
+              <AboutModal/>
+            </Flex>
+            <Flex style={{padding: 20, marginTop: 50, maxWidth: 900}}>
+              <ManageBar messages={messages}
+                         setMessages={setMessages}
+                         subscriptionListRef={subscriptionListRef}
+                         subscriptions={subscriptions}
+                         setSubscriptions={setSubscriptions}
+              />
+            </Flex>
           </Flex>
         </ConfigProvider>
-        {/*<h1 style={{marginLeft: 20}}>WebSocket Test</h1>*/}
 
-
-          <Flex gap={5} style={{backgroundColor: "white", padding: 10, overflowY: "scroll", overflowX: "scroll", width: 600}}>
-              <Flex style={{position: "sticky", top: 0}}>
-
-                  <Button icon={<DeleteOutlined style={{fontSize: 20}} />}
-                          title={"Clear all"}
-
-                          onClick={() => setMessages([])}
-                  />
-              </Flex>
-
-              <List dataSource={messages}
-                    renderItem={(item) => (
-                        <List.Item key={"log-" + Math.random()} style={{padding: 2, margin: 1, fontSize: 20}}
-                                   className={"pt-sans-regular"}>
-
-                            <LogItem logItem={item}/>
-                        </List.Item>
-                    )}
-              />
-          </Flex>
+        <LogsList messages={messages}
+                  setMessages={setMessages}
+        />
       </Flex>
   );
 }

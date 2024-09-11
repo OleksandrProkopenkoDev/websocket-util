@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
-import {Button, Flex, Segmented} from "antd";
-import {DestinationListItem, UpdateDestination} from "../api/DestinationService.ts";
+import {Flex, Segmented} from "antd";
+import {DestinationListItem, updateDestination} from "../api/DestinationService.ts";
 
 interface JsonEditorComponentProps {
   isConnected: boolean
@@ -32,7 +32,7 @@ const JsonEditorComponent: FC<JsonEditorComponentProps> = ({setJsonData,
     clearTimeout(saveTimeout)
     let timeout = setTimeout(() => {
       selectedDestination.jsonTemplates[templateIndex].json = newVal
-      UpdateDestination(selectedDestination)
+      updateDestination(selectedDestination)
     }, 1000)
     setSaveTimeout(timeout);
   };
@@ -56,17 +56,23 @@ const JsonEditorComponent: FC<JsonEditorComponentProps> = ({setJsonData,
   }
 
   return (
-      <Flex vertical gap={5} style={{maxWidth: 600, minHeight: 300}}>
-        <Flex className={"pt-sans-regular"} gap={5} align={"center"} justify={"space-between"}
-              style={{width: "100%"}}>
-          <span style={{fontSize: 25, fontWeight: "bold"}}>JSON Editor</span>
-          {/*<Button type={"primary"}*/}
-          {/*        onClick={onSendMessage}*/}
-          {/*        disabled={!isConnected}*/}
-          {/*>Send Message</Button>*/}
-
+      <Flex vertical
+            gap={5}
+            style={{maxWidth: 600, minHeight: 300}}
+      >
+        <Flex className={"pt-sans-regular"}
+              gap={5}
+              align={"center"}
+              justify={"space-between"}
+              style={{width: "100%"}}
+        >
+          <span  className={"text"} style={{fontSize: 25, fontWeight: "bold"}}>JSON Editor</span>
         </Flex>
-        <Flex vertical className={"editor"} style={{fontSize: 20}}>
+
+        <Flex vertical
+              className={"editor"}
+              style={{fontSize: 20}}
+        >
           <Flex gap={10} justify={"space-between"}>
             <Flex>
               {selectedDestination?.jsonTemplates &&
@@ -86,7 +92,7 @@ const JsonEditorComponent: FC<JsonEditorComponentProps> = ({setJsonData,
               }
             </Flex>
             <span
-                className={"pt-sans-regular"}>json is valid {isValidJSON(selectedTemplate) === true ?
+                className={"pt-sans-regular text"}>json is valid {isValidJSON(selectedTemplate) === true ?
                 <span>🟢</span> : <span>🔴</span>}</span>
           </Flex>
           <pre style={{margin: 0}}>

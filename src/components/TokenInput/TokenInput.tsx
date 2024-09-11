@@ -11,13 +11,20 @@ import {
 } from "../../api/TokenService.ts";
 
 interface TokenInputProps {
-  token : IToken
-  isConnected : boolean
+  token: IToken
+  isConnected: boolean
   setToken: (value: (((prevState: IToken) => IToken) | IToken)) => void
 }
+
 let index = 0;
 
-const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConnected, token, setToken}) => {
+const TokenInput: FC<TokenInputProps> = ({
+                                           selectedToken,
+                                           setSelectedToken,
+                                           isConnected,
+                                           token,
+                                           setToken
+                                         }) => {
   const [tokens, setTokens] = useState<TokenListItem[]>([])
   const [newToken, setNewToken] = useState('');
   const [label, setLabel] = useState('');
@@ -25,7 +32,7 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
   //@ts
   const inputRef = useRef<InputRef>(null);
 
-  const onRemove = (label : string) => {
+  const onRemove = (label: string) => {
     setTokens((prevState) => prevState.filter((e) => e.token !== label))
     removeTokenItem(label)
   }
@@ -50,7 +57,8 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
                     style={{fontSize: 18}}>
                   {tokenListItem.label}
                 </span>
-        <Tooltip placement="topLeft" title={<span style={{ fontSize: 15, }}>{tokenListItem.value}</span>}>
+        <Tooltip placement="topLeft"
+                 title={<span style={{fontSize: 15,}}>{tokenListItem.value}</span>}>
                 <span
                     style={{fontSize: 12, maxWidth: 200}}>
                     {tokenListItem.value}
@@ -82,9 +90,9 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
     }
   };
 
-  const onSelectToken = (label : string, tokenItem : any ) => {
+  const onSelectToken = (label: string, tokenItem: any) => {
     console.log("onSelectToken", tokenItem)
-    const selected : IToken = {token: tokenItem.value, label : tokenItem.label}
+    const selected: IToken = {token: tokenItem.value, label: tokenItem.label}
     updateTokenDate(selected)
     // saveToken(tokenItem.label, tokenItem.newToken)
     setToken(selected)
@@ -105,8 +113,11 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
             justify={"flex-start"}
             className={"pt-sans-regular"}
       >
-        <span className={"pt-sans-regular"} style={{fontWeight: "bold", marginRight: 10}}>Token: </span>
+        <span className={"pt-sans-regular text"}
+              style={{fontWeight: "bold", marginRight: 10}}>Token: </span>
+
         <Select
+            style={{height: "41"}}
             disabled={isConnected}
             optionRender={(option) => renderOption(option)}
             value={''}
@@ -147,23 +158,22 @@ const TokenInput:FC<TokenInputProps> = ({selectedToken, setSelectedToken, isConn
               key: "label-" + item.label
             }))}
         />
-        <Tooltip  title={<span style={{ fontSize: 15, }}>{token.token}</span>}>
+        <Tooltip title={<span style={{fontSize: 15,}}>{token.token}</span>}>
         <span style={{
+          borderLeft: "black 1px solid",
           fontSize: 20,
           maxWidth: 350,
-          border: "#d9d9d9 solid 1px",
-          background: "#ffffff",
-          borderRadius: 6,
-          padding: "4px 11px"
+          background: "var(--select-container-color)",
+          padding: "5px 11px", height: 31
         }}
               className={"pt-sans-regular"}>{token.label}</span>
         </Tooltip>
+        <Button type={"primary"} style={{marginLeft: "5", height: 41, marginTop: 0}}>Get
+          actual</Button>
 
-        <Tooltip  title={<span style={{ fontSize: 15, }}><a target={"_blank"} href="https://jwt.io/">Build token</a></span>}>
-          <InfoCircleOutlined  style={{marginLeft: 5}} />
-        </Tooltip>
-        <Button style={{marginLeft: "5"}}>Get actual</Button>
-
+        {/*<Tooltip  className={"text"}  title={<span style={{ fontSize: 15, }}><a target={"_blank"} href="https://jwt.io/">Build token</a></span>}>*/}
+        {/*  <InfoCircleOutlined  style={{marginLeft: 5}} />*/}
+        {/*</Tooltip>*/}
 
 
       </Flex>

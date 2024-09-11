@@ -12,8 +12,8 @@ const ConnectBtn: FC<ConnectBtnProps> = ({onConnect, isConnection, isConnected, 
   return (
       <Flex gap={5} align={"center"}>
         <div style={{fontSize: 20}} className={"pt-sans-regular"}>
-          <label htmlFor="status">Status: </label>
-          <span id="status">{status}</span>
+          <label className={"text"} htmlFor="status">Status: </label>
+          <span  className={"text"} id="status">{status}</span>
         </div>
         <Button type={"primary"}
                 danger={isConnected}

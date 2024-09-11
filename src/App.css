@@ -1,5 +1,11 @@
 @import url('https://fonts.googleapis.com/css2?family=PT+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
+@media (max-width: 800px) {
+  .mainWrapper {
+    flex-wrap: wrap;
+  }
+}
+
 .pt-sans-regular {
   font-family: "PT Sans", sans-serif;
   font-weight: 400;
@@ -15,10 +21,14 @@
   font-style: normal;
 }
 :root {
-  --border-color: #B5B0B
-
+  --border-color: #B5B0B;
+  --text-color: #d9d9d9;
+  --select-container-color: var(--text-color)
 }
 
+.text {
+  color: var(--text-color);
+}
 
 .pt-sans-regular-italic {
   font-family: "PT Sans", sans-serif;

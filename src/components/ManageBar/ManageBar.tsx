@@ -8,7 +8,6 @@ import JsonEditorComponent from "../JsonEditorComponent.tsx";
 import {
   getAllSubscriptions,
   removeSubscriptionItem,
-  subscriptionService
 } from "../../api/SubscriptionService.ts";
 import SubscriptionList from "../SubscriptionList/SubscriptionList.tsx";
 import {
@@ -52,7 +51,7 @@ const ManageBar: FC<ManageBarProps> = ({
   const [jsonInput, setJsonInput] = useState<string>('');
 
   useEffect(() => {
-    setSubscriptionList(subscriptionService.getAll())
+    setSubscriptionList(getAllSubscriptions())
   }, [localStorage.getItem("subscriptions")]);
 
   useEffect(() => {
@@ -201,25 +200,30 @@ const ManageBar: FC<ManageBarProps> = ({
 
           >
 
-            <ConnectBtn onConnect={onConnect}
-                        isConnected={isConnected}
-                        isConnection={isConnection}
-                        status={status}
-                        client={client}
-            />
 
-            <Flex gap={10}>
-              <HandshakeInput handshakeUrl={handshakeUrl}
-                              isConnected={isConnected}
-                              setHandshakeUrl={setHandshakeUrl}
-              />
-              <TokenInput token={token}
+            <Flex gap={10} vertical>
+              <ConnectBtn onConnect={onConnect}
                           isConnected={isConnected}
-                          setToken={setToken}
+                          isConnection={isConnection}
+                          status={status}
+                          client={client}
               />
+              <Flex gap={10} style={{flexWrap: "wrap"}}>
+                <HandshakeInput handshakeUrl={handshakeUrl}
+                                isConnected={isConnected}
+                                setHandshakeUrl={setHandshakeUrl}
+                />
+                <TokenInput token={token}
+                            isConnected={isConnected}
+                            setToken={setToken}
+                />
+              </Flex>
             </Flex>
 
 
+          </Flex>
+
+          <Flex gap={10} vertical style={{maxWidth: 700}}>
             <SubscribeInput isConnected={isConnected}
                             logEvent={logEvent}
                             client={client}
@@ -230,8 +234,8 @@ const ManageBar: FC<ManageBarProps> = ({
                             endpoint={endpoint}
                             subscriptions={subscriptions}
             />
+            <SubscriptionList OnUnsubscribe={OnUnsubscribe} subscriptions={subscriptions}/>
           </Flex>
-          <SubscriptionList OnUnsubscribe={OnUnsubscribe} subscriptions={subscriptions}/>
         </Flex>
 
         <Flex vertical
