@@ -1,6 +1,6 @@
 import React, {FC, useState} from 'react';
 import TokensList from "./TokensList.tsx";
-import {Button, Divider, Flex, Input, message, notification, Space} from "antd";
+import {Button, Divider, Flex, Input, notification} from "antd";
 import {CheckOutlined, CloseCircleOutlined, PlusOutlined} from "@ant-design/icons";
 import {
   LoginRequest,
@@ -8,9 +8,13 @@ import {
   saveRequestTokenIfNotSaved,
   TokenListItem
 } from "../../api/TokenService.ts";
-import {b} from "vite/dist/node/types.d-aGj9QkWt";
+import {
+  getApiUrlFromProvidedHandshakeUrl,
+  prepareLoginRequestInitData
+} from "../../api/util/TokenUtils.ts";
 
 interface RequestTokensTabProps {
+  updateTokenByLabel :(label: string, newToken: string) => void
   onSelectToken : (selectedTokenItem: TokenListItem) => void
   handshakeUrl : string
   tokens : TokenListItem[]
@@ -18,16 +22,8 @@ interface RequestTokensTabProps {
   setTokens: (value: (((prevState: TokenListItem[]) => TokenListItem[]) | TokenListItem[])) => void
 }
 
-const getApiUrlFromProvidedHandshakeUrl = (handshakeUrl? : string) => {
-  if (!handshakeUrl) return;
-  const serverUrlIndex = handshakeUrl.lastIndexOf(":")
-  const serverUrlPar1 = handshakeUrl.substring(0, serverUrlIndex)
-  const serverUrlPar2 = handshakeUrl.substring(serverUrlIndex, serverUrlPar1.length + 5)
-  return serverUrlPar1 + serverUrlPar2 + "/api/authentication/login";
-}
 
-
-const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshakeUrl, setTokens, onSelectToken}) => {
+const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshakeUrl, setTokens, onSelectToken, updateTokenByLabel}) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('')
   const [label, setLabel] = useState('');
@@ -60,31 +56,23 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshake
       password: password,
       serverApiUrl : serverApiUrl
     }
-    console.log("request", request)
-    console.log("user", response.userDto)
-    console.log("token", response.token)
-    console.log("label", label)
-
     const saved = saveRequestTokenIfNotSaved(response.token, label, request, response.userDto)
     tokens.push(saved)
     setTokens(tokens)
+  }
 
+  const onRequestError = (error : any) => {
+    sendWarning("Error happend during request", error)
+    setIsRequestSuccessful(false)
+    setIsLoading(false)
+    console.error('Error:', error);
   }
 
   const onVerifyCredentials = async () => {
-    const requestBody : LoginRequest  = {
-      userEmail : email,
-      password : password
-    };
-
     setIsLoading(true)
-    fetch(serverApiUrl, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify(requestBody)
-    })
+    const requestDetails = prepareLoginRequestInitData(email, password)
+
+    fetch(serverApiUrl, requestDetails)
     .then(response => {
       setIsLoading(false)
       if (response.status != '200') {
@@ -101,21 +89,19 @@ const RequestTokensTab:FC<RequestTokensTabProps> = ({tokens, onRemove, handshake
         setResponse(data); // Save the response data in the state
       }
     })
-    .catch(error => {
-      sendWarning("Error happend during request", error)
-      setIsRequestSuccessful(false)
-      setIsLoading(false)
-      console.error('Error:', error);
-    });
+    .catch(onRequestError);
   }
+
 
   return (
       <>
-        <TokensList onSelectToken={onSelectToken}  tokens={tokens} onRemove={onRemove}/>
+        <TokensList updateTokenByLabel={updateTokenByLabel} onSelectToken={onSelectToken}
+                    setTokens={setTokens} tokens={tokens.filter((e) => e.request !== undefined)}
+                    onRemove={onRemove}/>
 
         <Divider orientation={"left"} style={{margin: '8px 0'}}>Add new request</Divider>
-        <Flex vertical   style={{padding: '0 8px 4px', fontSize: 18, width: "100%"}}
-               className={"pt-sans-regular"}>
+        <Flex vertical style={{padding: '0 8px 4px', fontSize: 18, width: "100%"}}
+              className={"pt-sans-regular"}>
 
           <Flex style={{width: "100%"}}>
             <Flex gap={20} align={"start"} style={{width: "100%"}}>

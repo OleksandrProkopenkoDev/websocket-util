@@ -52,11 +52,6 @@ const TokenInput: FC<TokenInputProps> = ({
   const [tokens, setTokens] = useState<TokenListItem[]>([])
 
   useEffect(() => {
-    console.log("upd tokens")
-  }, [tokens]);
-
-
-  useEffect(() => {
     console.log("useEffect getAllTokenItems localStorage.getItem(TOKEN_STORAGE_NAME)")
     let arr = getAllTokenItems();
     if (arr[0]) {
@@ -65,23 +60,29 @@ const TokenInput: FC<TokenInputProps> = ({
     setTokens(arr)
   }, []);
 
-
   const onRemove = (label: string) => {
-    setTokens((prevState) => prevState.filter((e) => e.token !== label))
+    setTokens((prevState) => prevState.filter((e) => e.label !== label))
     removeTokenItem(label)
   }
 
   const onSelectToken = (selectedTokenItem : TokenListItem) => {
-    console.log("onSelectToken", selectedTokenItem)
-
     updateTokenDate(selectedTokenItem.label)
     setToken(selectedTokenItem)
     setIsOpen(false)
   }
 
-  const onChange = (key: string) => {
-    console.log(key);
-  };
+
+  const updateTokenByLabel = (label : string, newToken : string) => {
+    if (!setTokens) {
+      return;
+    }
+    let find = tokens.find((e) => e.label === label)
+    if (find) {
+      find.token = newToken;
+    }
+    setTokens([...tokens])
+  }
+
 
   const tabItems: TabsProps['items'] = [
     {
@@ -89,10 +90,11 @@ const TokenInput: FC<TokenInputProps> = ({
       label: 'Tokens from requests',
       children:
           <RequestTokensTab onSelectToken={onSelectToken}
-              handshakeUrl={handshakeUrl}
-              tokens={tokens.filter((e) => e.request !== undefined)}
-              onRemove={onRemove}
-              setTokens={setTokens}
+                            updateTokenByLabel={updateTokenByLabel}
+                            handshakeUrl={handshakeUrl}
+                            tokens={tokens}
+                            onRemove={onRemove}
+                            setTokens={setTokens}
           />
     },
     {
@@ -100,13 +102,14 @@ const TokenInput: FC<TokenInputProps> = ({
       label: 'Saved tokens',
       children:
           <SavedTokensTab setTokens={setTokens}
-                          tokens={tokens.filter((e) => e.request === undefined)}
+                          tokens={tokens}
                           onRemove={onRemove}
                           onSelectToken={onSelectToken}
           />
-
     }
   ];
+
+
 
 
   return (
@@ -134,7 +137,7 @@ const TokenInput: FC<TokenInputProps> = ({
         <Button style={{height: 41, marginTop: 0}} type={"primary"} disabled={isConnected} onClick={() => setIsOpen(true)}>SelectToken</Button>
         <Modal width={700} onOk={() => setIsOpen(false)} open={isOpen} onCancel={() => setIsOpen(false)}>
 
-          <Tabs defaultActiveKey="1" items={tabItems} onChange={onChange}/>
+          <Tabs defaultActiveKey="1" items={tabItems}/>
 
         </Modal>
       </Flex>

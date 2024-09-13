@@ -38,6 +38,10 @@ export const updateTokenDate = (label: string) => {
   tokenService.updateItemDate(label);
 };
 
+export const updateToken = (label: string, newToken : string) => {
+  tokenService.updateItemProperty(label, "token", newToken);
+};
+
 export const saveRequestTokenIfNotSaved = (token: string, label: string, request: LoginRequest, user: UserDto) : TokenListItem => {
   const newItem: TokenListItem = {
     token,

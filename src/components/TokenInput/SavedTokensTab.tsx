@@ -36,7 +36,7 @@ const SavedTokensTab:FC<SavedTokensTabProps> = ({tokens, onRemove, setTokens, on
 
   return (
       <>
-        <TokensList onSelectToken={onSelectToken} tokens={tokens} onRemove={onRemove}/>
+        <TokensList onSelectToken={onSelectToken} setTokens={setTokens} tokens={tokens.filter((e) => e.request === undefined)} onRemove={onRemove}/>
 
         <Divider orientation={"left"} style={{margin: '8px 0'}}>Add new token</Divider>
         <Space style={{padding: '0 8px 4px'}}>

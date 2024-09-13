@@ -30,6 +30,15 @@ export class GenericStorageService<T extends { addedOn: Date }> {
     }
   }
 
+  public updateItemProperty(identityValue: T[keyof T], propertyName : string, propertyValue : string) {
+    let items = this.getAllItems();
+    let item = items.find(e => e[this.identityField] === identityValue);
+    if (item) {
+      item[propertyName] = propertyValue;
+      this.saveItemsList(items);
+    }
+  }
+
   public getAllItemsSortedByDate(): string[] {
     return this.getAllItems()
     .sort((a, b) => new Date(b.addedOn).getTime() - new Date(a.addedOn).getTime())

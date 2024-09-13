@@ -3,11 +3,13 @@ import {Button, Flex, List, Tooltip} from "antd";
 import {CheckCircleOutlined, CloseOutlined, WarningOutlined} from "@ant-design/icons";
 import {TokenListItem} from "../../api/TokenService.ts";
 import classes from './Token.module.css'
+import RefreshToken from "./RefreshToken.tsx";
 
 
 interface TokensListProps {
-  onSelectToken : (selectedTokenItem: TokenListItem) => void
+  updateToken? :(     label: string,     newToken: string) => void
   tokens : TokenListItem[]
+  onSelectToken : (selectedTokenItem: TokenListItem) => void
   onRemove : (label: string) => void
 }
 
@@ -39,7 +41,9 @@ function isTokenExpired(token) : ReactElement {
   }
 }
 
-const TokensList:FC<TokensListProps> = ({tokens, onRemove, onSelectToken}) => {
+const TokensList:FC<TokensListProps> = ({tokens, onRemove, onSelectToken, updateToken}) => {
+
+
   return (
       <List dataSource={tokens}
             renderItem={(tokenListItem) => (
@@ -51,12 +55,14 @@ const TokensList:FC<TokensListProps> = ({tokens, onRemove, onSelectToken}) => {
                       style={{
                         backgroundColor: "rgba(0,0,0,0.05)",
                         margin: "5px 0",
-                        padding: 5,
-                        cursor: "pointer"
+                        padding: 5
                       }}
-                      onClick={() => onSelectToken(tokenListItem)}
                 >
-                  <Flex vertical gap={2}>
+                  <Flex onClick={() => onSelectToken(tokenListItem)}
+                        vertical
+                        gap={2}
+                        style={{cursor: "pointer"}}
+                  >
                           <span style={{
                             fontSize: 18,
                             fontWeight: "bold"
@@ -68,6 +74,9 @@ const TokensList:FC<TokensListProps> = ({tokens, onRemove, onSelectToken}) => {
                   </Flex>
                   <Flex gap={5}>
                     {isTokenExpired(tokenListItem.token)}
+                    {updateToken &&
+                        <RefreshToken updateTokenByLabel={updateToken} token={tokenListItem}/>
+                    }
                     <Button danger
                             onClick={() => onRemove(tokenListItem.label)}
                             icon={<CloseOutlined/>}
