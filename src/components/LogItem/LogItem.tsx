@@ -1,6 +1,7 @@
 import React, {FC, useState} from 'react';
 import {Button, Flex} from "antd";
 import classes from './LogItem.module.css'
+import moment from 'moment';
 
 export enum LogType {
   RECEIVE, SEND, OTHER
@@ -30,6 +31,7 @@ const LogItem: FC<LogItemProps> = ({logItem}) => {
             style={{
               width: "100%",
               padding: "0 15px",
+              margin: "0 5px",
               // backgroundColor: logItem.type === LogType.SEND ? "#c6d9ea" : "#dcecd2",
               backgroundColor: logItem.type === LogType.SEND ? "rgba(22,118,253,0.41)" : "#11741f",
               borderRadius: 5
@@ -40,6 +42,7 @@ const LogItem: FC<LogItemProps> = ({logItem}) => {
           {!isOpen &&
               <Button style={{position: "relative", bottom: 2}}>...</Button>
           }
+          {/*<span>{moment().startOf('hour').fromNow();}</span>*/}
         </Flex>
 
         {isOpen &&
