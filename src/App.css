@@ -6,7 +6,26 @@
   }
 }
 
+.subs-and-dest-container, .connectPanel {
+  background-color: #070f2563;
+  border-radius: 20px;
+  padding: 10px;
+}
 
+@media (max-width: 1390px) {
+  .subs-and-dest-container {
+    flex-direction: column;
+  }
+
+}
+
+.SubscriptionList {
+  scrollbar-color: #1676fd #102252;
+  padding: 5px;
+}
+/*background-color: #070f2563;*/
+/*border-radius: 20px;*/
+/*padding: 10px;*/
 
 
 .pt-sans-regular {
@@ -23,10 +42,15 @@
   font-weight: 700;
   font-style: normal;
 }
+
+
+
 :root {
   --border-color: #B5B0B;
   --text-color: #fafafa;
-  --select-container-color: var(--text-color);
+  --input-bg-color : #202f64;
+  --input-text-color : #fafafa;
+  /*--input-primary-color : #E0E2DB;*/
   --disabled-bg-color: #070f25
 }
 

@@ -1,0 +1,7 @@
+
+.dropdownWrapper {
+  max-height: 30vh!important;
+  overflow-y: scroll;
+  scrollbar-width: thin;
+
+}

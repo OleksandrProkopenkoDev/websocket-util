@@ -1,3 +1,5 @@
+import {message, notification} from "antd";
+
 export class GenericStorageService<T extends { addedOn: Date }> {
   private readonly storageKey: string;
   private readonly identityField: keyof T;
@@ -59,9 +61,14 @@ export class GenericStorageService<T extends { addedOn: Date }> {
   }
 
   public getAllItems(): T[] {
-    let items = JSON.parse(localStorage.getItem(this.storageKey) || "[]");
-    return items;
+    try {
+      return JSON.parse(localStorage.getItem(this.storageKey) || "[]");
+    } catch (e) {
+      notification.warning({message: "Unexpected error when parse " +this.storageKey, description : "Please import data from another file"})
+      return []
+    }
   }
+
 
   public saveItemsList(items: T[]) {
     localStorage.setItem(this.storageKey, JSON.stringify(items));

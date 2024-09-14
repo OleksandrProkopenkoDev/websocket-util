@@ -30,7 +30,8 @@ const LogItem: FC<LogItemProps> = ({logItem}) => {
             style={{
               width: "100%",
               padding: "0 15px",
-              backgroundColor: logItem.type === LogType.SEND ? "#c6d9ea" : "#dcecd2",
+              // backgroundColor: logItem.type === LogType.SEND ? "#c6d9ea" : "#dcecd2",
+              backgroundColor: logItem.type === LogType.SEND ? "rgba(22,118,253,0.41)" : "#11741f",
               borderRadius: 5
             }}
       >
@@ -43,7 +44,7 @@ const LogItem: FC<LogItemProps> = ({logItem}) => {
 
         {isOpen &&
             <Flex>
-              <pre style={{margin: 0, fontSize: 18, padding: "5px 10px"}}>
+              <pre style={{margin: 0, fontSize: 18, padding: "5px 10px", color: "var(--input-text-color)"}}>
                 {JSON.stringify(JSON.parse(logItem.json), null, 2)}
               </pre>
             </Flex>

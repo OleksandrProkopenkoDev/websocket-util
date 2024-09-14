@@ -42,36 +42,49 @@ const DestinationInput: FC<DestinationInputProps> = ({isConnected,
     </Flex>
   }
 
+  const onInputKeyDown = (e) => {
+    if (e.key === 'Enter') {
+      setDestination(e.target.value)
+      if (isConnected) {
+        onSendMessage()
+      }
+    }
+  }
+
   return (
       <Flex style={{fontSize: 20}}
             className={"pt-sans-regular"}
-            align={"center"}
+            vertical
       >
         <label htmlFor="destination"  className={"text"} style={{marginRight: 10}}>Destination: </label>
-        <Select
-            style={{height: "100%", borderRight: "solid black 1px"}}
-            optionRender={(option) => renderOption(option.value as string)}
-            value={""}
-            onSelect={onSelect}
-            optionFilterProp="label"
-            dropdownStyle={{width: 500}}
-            options={destinationsList.map((item) => ({
-              value: item.destination,
-              label: item.destination,
-            }))}
-        />
-        <Input style={{fontSize: 20, maxWidth: 350, height: 43}} className={"pt-sans-regular"}
-               type="text"
-               id="destination"
-               value={destination}
-               onChange={(e) => setDestination(e.target.value)}
-        />
+        <Flex>
+          <Select
+              style={{height: 43, borderRight: "solid black 1px"}}
+              optionRender={(option) => renderOption(option.value as string)}
+              value={""}
+              onSelect={onSelect}
+              optionFilterProp="label"
+              dropdownStyle={{width: 500}}
+              options={destinationsList.map((item) => ({
+                value: item.destination,
+                label: item.destination,
+              }))}
+          />
+          <Input style={{fontSize: 20, maxWidth: 350, height: 43}} className={"pt-sans-regular"}
+                 allowClear
+                 type="text"
+                 id="destination"
+                 value={destination}
+                 onKeyDown={onInputKeyDown}
+                 onChange={(e) => setDestination(e.target.value)}
+          />
 
-        <Button type={"primary"}
-                style={{marginTop: 0, height: 43}}
-                onClick={onSendMessage}
-                disabled={!isConnected}
-        >Send Message</Button>
+          <Button type={"primary"}
+                  style={{marginTop: 0, height: 43}}
+                  onClick={onSendMessage}
+                  disabled={!isConnected}
+          >Send Message</Button>
+        </Flex>
       </Flex>
   );
 };

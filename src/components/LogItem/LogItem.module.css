@@ -1,11 +1,10 @@
 
-
 .message {
-    transition: 300ms;
+  transition: 300ms;
+  color: var(--input-text-color);
 }
 
 .message:hover {
   cursor: pointer;
   text-decoration: underline;
-  /*color: #065607;*/
 }

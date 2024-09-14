@@ -92,21 +92,22 @@ const JsonEditorComponent: FC<JsonEditorComponentProps> = ({setJsonData,
               }
             </Flex>
             <span
-                className={"pt-sans-regular text"}>json is valid {isValidJSON(selectedTemplate) === true ?
+                className={"pt-sans-regular text"} style={{color: "var(--input-text-color)"}} >json is valid {isValidJSON(selectedTemplate) === true ?
                 <span>🟢</span> : <span>🔴</span>}</span>
           </Flex>
           <pre style={{margin: 0}}>
           <textarea cols={5}
-
                     rows={9}
                     value={selectedTemplate}
                     className={"pt-sans-regular"}
                     onChange={handleChange}
                     style={{
+                      border: "none",
+                      scrollbarWidth: "thin",
                       fontSize: 20,
                       maxHeight: 400,
-                      backgroundColor: "#f2f2f2",
-                      color: "black"
+                      backgroundColor: "var(--input-bg-color)",
+                      color: "var(--input-text-color)"
                     }}>
           </textarea>
           </pre>

@@ -126,8 +126,8 @@ const TokenInput: FC<TokenInputProps> = ({
             borderLeft: "black 1px solid",
             fontSize: 20,
             maxWidth: 350,
-            backgroundColor: isConnected ? "var(--disabled-bg-color)" : "var(--text-color)",
-            color: isConnected ? "#ababab" : "black",
+            backgroundColor: isConnected ? "var(--disabled-bg-color)" : "var(--input-bg-color)",
+            color: isConnected ? "#ababab" : "var(--input-text-color)",
             padding: "5px 11px", height: 31
           }}
                 className={"pt-sans-regular"}>{token === null ? "null" : token.label }</span>
