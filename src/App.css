@@ -3,55 +3,139 @@
 @media (max-width: 800px) {
   .mainWrapper {
     flex-wrap: wrap;
+
   }
 }
-
-.subs-and-dest-container, .connectPanel {
-  background-color: #070f2563;
-  border-radius: 20px;
-  padding: 10px;
-}
-
-@media (max-width: 1390px) {
-  .subs-and-dest-container {
-    flex-direction: column;
-  }
-
-}
-
-.SubscriptionList {
-  scrollbar-color: #1676fd #102252;
-  padding: 5px;
-}
-/*background-color: #070f2563;*/
-/*border-radius: 20px;*/
-/*padding: 10px;*/
-
-
-.pt-sans-regular {
-  font-family: "PT Sans", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-}
-.editor div {
-  font-size: 20px!important;
-}
-
-.pt-sans-bold {
-  font-family: "PT Sans", sans-serif;
-  font-weight: 700;
-  font-style: normal;
-}
-
-
 
 :root {
   --border-color: #B5B0B;
   --text-color: #fafafa;
   --input-bg-color : #202f64;
   --input-text-color : #fafafa;
-  /*--input-primary-color : #E0E2DB;*/
-  --disabled-bg-color: #070f25
+  --disabled-bg-color: #070f25;
+  --text-color-disabled : #ababab;
+  --button-bg-disabled: #0f3e7e;
+  --segment-selected-bg: rgb(11,23,54);
+  --manage-panel-bg: #070f2563;
+  --manage-panel-border : none;
+  --subscription-list-border-color: #0e2257;
+  --subscription-list-scrollbar-color1: #1676fd;
+  --subscription-list-scrollbar-color2: #102252;
+  --color-primary: #e4e4e4;
+  --primary-color : #fff;
+  --color-primary-hover: #4096ff;
+  --modal-bg: #fff;
+  --bg-image : url('https://i.pinimg.com/736x/ed/e6/67/ede667da3dddcc6be676d12377432dd5.jpg')
+
+}
+
+.light-theme {
+  --border-color: #B5B0B;
+  --text-color: #020202;
+  --input-bg-color : #ffffff;
+  --input-text-color : #000000;
+  --disabled-bg-color: #888888;
+  --text-color-disabled : #000000;
+  --button-bg-disabled: #f6f6f6;
+  --segment-selected-bg: rgb(239, 239, 239);
+  --manage-panel-bg: rgba(232, 232, 232, 0.8);
+  --manage-panel-border : solid #dcdcdc 2px;
+  --subscription-list-border-color: #686868;
+  --subscription-list-scrollbar-color1: #d6d6d6;
+  --subscription-list-scrollbar-color2: #9f9f9f;
+  --color-primary: #d6d6d6;
+  --primary-color : #ffffff;
+  --color-primary-hover: #d5d5d5;
+  --modal-bg: #e8e8e8;
+  --bg-image : #c0c0d6
+
+
+}
+
+.dark-blue-theme {
+  --border-color: #B5B0B;
+  --text-color: #fafafa;
+  --input-bg-color : #202f64;
+  --input-text-color : #fafafa;
+  --disabled-bg-color: #070f25;
+  --text-color-disabled : #ababab;
+  --button-bg-disabled: #0f3e7e;
+  --segment-selected-bg: rgb(11,23,54);
+  --manage-panel-bg: #070f2563;
+  --manage-panel-border : none;
+  --subscription-list-border-color: #0e2257;
+  --subscription-list-scrollbar-color1: #1676fd;
+  --subscription-list-scrollbar-color2: #102252;
+  --color-primary: #1677ff;
+  --primary-color : #fff;
+  --color-primary-hover: #ffffff;
+  --modal-bg: #fff;
+  --bg-image : url('https://i.pinimg.com/736x/ed/e6/67/ede667da3dddcc6be676d12377432dd5.jpg')
+
+
+}
+
+body {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+  background-color: #C1C1D7;
+  color: #333;
+  padding: 0;
+  margin: 0;
+
+  transition: all 0.25s ease;
+}
+
+html, body{
+  height: 100vh;
+}
+
+.subs-and-dest-container, .connectPanel {
+  background-color: var(--manage-panel-bg);
+  border-radius: 20px;
+  padding: 10px;
+  border: var(--manage-panel-border);
+}
+
+@media (max-width: 1390px) {
+  .subs-and-dest-container {
+  }
+    flex-direction: column;
+
+}
+
+.SubscriptionList {
+  scrollbar-color: vaR(--subscription-list-scrollbar-color1) var(--subscription-list-scrollbar-color2);
+  overflow-y: scroll;
+  height: 100%;
+  max-height: 330px;
+  border: solid 3px var(--subscription-list-border-color);
+  scrollbar-width: thin;
+  border-radius: 10px;
+  padding: 5px;
+}
+/*background-color: #070f2563;*/
+/*border-radius: 20px;*/
+
+
+/*padding: 10px;*/
+.pt-sans-regular {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 400;
+  font-style: normal;
+}
+
+.editor div {
+  font-size: 20px!important;
+}
+
+
+
+.pt-sans-bold {
+  font-family: "PT Sans", sans-serif;
+  font-weight: 700;
+  font-style: normal;
 }
 
 .text {
@@ -68,20 +152,6 @@
   font-family: "PT Sans", sans-serif;
   font-weight: 700;
   font-style: italic;
-}
-
-body {
-  font-family: "PT Sans", sans-serif;
-  font-weight: 400;
-  font-style: normal;
-  background-color: #C1C1D7;
-  /*background-color: #f0f8f0;*/
-  color: #333;
-  padding: 0;
-  margin: 0;
-}
-html, body{
-  height: 100vh;
 }
 
 h1 {
@@ -164,6 +234,4 @@ button:hover {
   flex-direction: column;
   flex: 1;
   margin-left: 15px;
-}
-body{
 }

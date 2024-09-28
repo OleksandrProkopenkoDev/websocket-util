@@ -26,15 +26,7 @@ const SubscriptionList: FC<SubscriptionListProps> = ({
   }
 
   return (
-      <div className={"SubscriptionList"} style={{
-        overflowY: "scroll",
-        height: "100%",
-        maxHeight: 330,
-        border: "solid 3px",
-        borderRadius: 10,
-        borderColor: "#0e2257",
-        scrollbarWidth: "thin",
-      }}>
+      <div className={"SubscriptionList"}>
         <ConfigProvider renderEmpty={() => <Empty image={Empty.PRESENTED_IMAGE_SIMPLE}
                                                   description={<span style={{color: "var(--input-text-color)"}}>No subscriptions</span>}/>}>
           <List

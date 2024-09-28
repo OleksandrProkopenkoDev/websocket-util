@@ -1,7 +1,7 @@
 import React, {useRef} from 'react';
 import {Button, notification} from "antd";
 import {UploadOutlined} from "@ant-design/icons";
-import {importAllData} from "../../api/DataService.ts";
+import {importAllData} from "../../../api/DataService.ts";
 
 const ImportData = () => {
   const inputRef = useRef<HTMLInputElement | null>(null);

@@ -1,7 +1,7 @@
 import React from 'react';
 import {Button} from "antd";
 import {DownloadOutlined} from "@ant-design/icons";
-import {exportAllDataAsJson} from "../../api/DataService.ts";
+import {exportAllDataAsJson} from "../../../api/DataService.ts";
 
 const ExportData = () => {
 
